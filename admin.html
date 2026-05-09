@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel – Joy's View</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .admin-header {
+      background: #1a1a1a;
+      border-bottom: 2px solid #c8a96e;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .admin-header .logo {
+      font-family: 'Forum', serif;
+      font-size: 1.5rem;
+      color: #c8a96e;
+      text-decoration: none;
+    }
+
+    .admin-header .logo span {
+      color: #fff;
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      margin-left: 12px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .user-label {
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+
+    .btn-back {
+      background: transparent;
+      border: 1px solid #c8a96e;
+      color: #c8a96e;
+      padding: 7px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: #c8a96e;
+      color: #000;
+    }
+
+    .btn-logout {
+      background: #c8a96e;
+      border: none;
+      color: #000;
+      padding: 7px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: background 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: #e0bc7e;
+    }
+
+    /* Access denied */
+    #accessDenied {
+      display: none;
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    #accessDenied h2 {
+      color: #c8a96e;
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    #accessDenied p {
+      color: #aaa;
+      margin-bottom: 24px;
+    }
+
+    /* Loading */
+    #loading {
+      text-align: center;
+      padding: 80px;
+      color: #aaa;
+    }
+
+    /* Main content */
+    .admin-main {
+      padding: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Stats bar */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-card .stat-num {
+      font-family: 'Forum', serif;
+      font-size: 2.2rem;
+      color: #c8a96e;
+    }
+
+    .stat-card .stat-label {
+      color: #aaa;
+      font-size: 0.82rem;
+      margin-top: 4px;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .filters input,
+    .filters select {
+      background: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 9px 14px;
+      color: #fff;
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .filters input:focus,
+    .filters select:focus {
+      border-color: #c8a96e;
+    }
+
+    .filters input {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid #2a2a2a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    thead {
+      background: #1e1e1e;
+    }
+
+    thead th {
+      padding: 14px 16px;
+      text-align: left;
+      color: #c8a96e;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-top: 1px solid #222;
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: #1a1a1a;
+    }
+
+    tbody td {
+      padding: 13px 16px;
+      color: #ddd;
+      vertical-align: top;
+    }
+
+    .td-email {
+      color: #aaa;
+      font-size: 0.82rem;
+    }
+
+    /* Status badge */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-pending {
+      background: #3a2800;
+      color: #f0a500;
+      border: 1px solid #f0a500;
+    }
+
+    .badge-confirmed {
+      background: #0d2e0d;
+      color: #4caf50;
+      border: 1px solid #4caf50;
+    }
+
+    .badge-cancelled {
+      background: #2e0d0d;
+      color: #f44336;
+      border: 1px solid #f44336;
+    }
+
+    /* Status select */
+    .status-select {
+      background: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 6px;
+      color: #fff;
+      padding: 5px 8px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .status-select:focus {
+      border-color: #c8a96e;
+    }
+
+    /* No data */
+    .no-data {
+      text-align: center;
+      padding: 60px;
+      color: #555;
+    }
+
+    .no-data p {
+      margin-top: 8px;
+      font-size: 0.9rem;
+    }
+
+    /* Refresh btn */
+    .refresh-btn {
+      background: #c8a96e;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 20px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: background 0.2s;
+    }
+
+    .refresh-btn:hover {
+      background: #e0bc7e;
+    }
+
+    .section-title {
+      font-family: 'Forum', serif;
+      font-size: 1.6rem;
+      color: #c8a96e;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="admin-header">
+    <a href="index.html" class="logo">Joy's View <span>Admin Panel</span></a>
+    <div class="header-right">
+      <span class="user-label" id="adminUserLabel"></span>
+      <a href="index.html" class="btn-back">← Back to Site</a>
+      <button class="btn-logout" onclick="doLogout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- Loading state -->
+  <div id="loading">
+    <p style="font-size:1.1rem;">Checking access...</p>
+  </div>
+
+  <!-- Access denied -->
+  <div id="accessDenied">
+    <h2>Access Denied</h2>
+    <p>This page is for admins only. Please log in with an admin account.</p>
+    <a href="index.html" class="btn-back">Go Back to Site</a>
+  </div>
+
+  <!-- Admin content -->
+  <main class="admin-main" id="adminContent" style="display:none;">
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">—</div>
+        <div class="stat-label">Total Reservations</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statPending">—</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statConfirmed">—</div>
+        <div class="stat-label">Confirmed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statCancelled">—</div>
+        <div class="stat-label">Cancelled</div>
+      </div>
+    </div>
+
+    <div
+      style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+      <h2 class="section-title" style="margin-bottom:0;">Reservations</h2>
+      <button class="refresh-btn" onclick="loadReservations()">↻ Refresh</button>
+    </div>
+
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Search by name, email, phone..." oninput="renderTable()">
+      <select id="statusFilter" onchange="renderTable()">
+        <option value="">All Statuses</option>
+        <option value="pending">Pending</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table id="reservTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Date & Time</th>
+            <th>Guests</th>
+            <th>Message</th>
+            <th>Submitted</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+      </table>
+      <div class="no-data" id="noData" style="display:none;">
+        <p style="font-size:2rem;">📋</p>
+        <p>No reservations found.</p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // =============================================
+    // PASTE YOUR FIREBASE CONFIG HERE (same as index.html)
+    // =============================================
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAI__6j1u2qqZrfg0ckK1TH-OQ1wNPtlwQ",
+      authDomain: "joysview.firebaseapp.com",
+      projectId: "joysview",
+      storageBucket: "joysview.firebasestorage.app",
+      messagingSenderId: "84104072720",
+      appId: "1:84104072720:web:d5b9df043b23253da20495"
+    };
+
+    // Must match the ADMIN_EMAIL in index.html
+    const ADMIN_EMAIL = "admin@joysview.com";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let allReservations = [];
+
+    onAuthStateChanged(auth, (user) => {
+      document.getElementById('loading').style.display = 'none';
+      if (!user || user.email !== ADMIN_EMAIL) {
+        document.getElementById('accessDenied').style.display = 'block';
+        return;
+      }
+      document.getElementById('adminContent').style.display = 'block';
+      document.getElementById('adminUserLabel').textContent = user.email;
+      loadReservations();
+    });
+
+    window.doLogout = async () => {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    };
+
+    window.loadReservations = async function () {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#aaa;">Loading...</td></tr>';
+      try {
+        const q = query(collection(db, 'reservations'), orderBy('createdAt', 'desc'));
+        const snap = await getDocs(q);
+        allReservations = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        updateStats();
+        renderTable();
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#f44336;">Error loading: ${e.message}</td></tr>`;
+      }
+    };
+
+    function updateStats() {
+      const total = allReservations.length;
+      const pending = allReservations.filter(r => r.status === 'pending').length;
+      const confirmed = allReservations.filter(r => r.status === 'confirmed').length;
+      const cancelled = allReservations.filter(r => r.status === 'cancelled').length;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statPending').textContent = pending;
+      document.getElementById('statConfirmed').textContent = confirmed;
+      document.getElementById('statCancelled').textContent = cancelled;
+    }
+
+    window.renderTable = function () {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value;
+
+      let filtered = allReservations.filter(r => {
+        const matchSearch = !search ||
+          (r.name || '').toLowerCase().includes(search) ||
+          (r.email || '').toLowerCase().includes(search) ||
+          (r.phone || '').toLowerCase().includes(search);
+        const matchStatus = !statusFilter || r.status === statusFilter;
+        return matchSearch && matchStatus;
+      });
+
+      const tbody = document.getElementById('tableBody');
+      const noData = document.getElementById('noData');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        noData.style.display = 'block';
+        return;
+      }
+      noData.style.display = 'none';
+
+      tbody.innerHTML = filtered.map((r, i) => {
+        const date = r.createdAt?.toDate ? r.createdAt.toDate().toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+        const statusClass = r.status === 'confirmed' ? 'badge-confirmed' : r.status === 'cancelled' ? 'badge-cancelled' : 'badge-pending';
+        return `
+          <tr>
+            <td>${i + 1}</td>
+            <td>
+              <strong>${r.name || '—'}</strong>
+              <div class="td-email">${r.userEmail || ''}</div>
+            </td>
+            <td>
+              <div>${r.phone || '—'}</div>
+              <div class="td-email">${r.email || ''}</div>
+            </td>
+            <td>
+              <div>${r.date || '—'}</div>
+              <div class="td-email">${r.time || ''}</div>
+            </td>
+            <td>${r.persons || '—'}</td>
+            <td style="max-width:160px; word-break:break-word;">${r.message || '<span style="color:#555">—</span>'}</td>
+            <td style="white-space:nowrap; font-size:0.8rem; color:#aaa;">${date}</td>
+            <td>
+              <select class="status-select" onchange="updateStatus('${r.id}', this.value)">
+                <option value="pending" ${r.status === 'pending' ? 'selected' : ''}>Pending</option>
+                <option value="confirmed" ${r.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                <option value="cancelled" ${r.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+              </select>
+            </td>
+          </tr>`;
+      }).join('');
+    };
+
+    window.updateStatus = async function (id, newStatus) {
+      try {
+        await updateDoc(doc(db, 'reservations', id), { status: newStatus });
+        // Update local data
+        const r = allReservations.find(x => x.id === id);
+        if (r) r.status = newStatus;
+        updateStats();
+      } catch (e) {
+        alert('Failed to update: ' + e.message);
+      }
+    };
+  </script>
+
+</body>
+
+</html>
