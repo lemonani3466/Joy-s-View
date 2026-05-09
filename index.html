@@ -36,12 +36,16 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.7);
       z-index: 9999;
       align-items: center;
       justify-content: center;
     }
-    .auth-modal-overlay.active { display: flex; }
+
+    .auth-modal-overlay.active {
+      display: flex;
+    }
+
     .auth-modal {
       background: #1a1a1a;
       border: 1px solid #c8a96e;
@@ -52,8 +56,19 @@
       color: #fff;
       font-family: 'DM Sans', sans-serif;
     }
-    .auth-modal h2 { color: #c8a96e; margin-bottom: 8px; font-size: 1.5rem; }
-    .auth-modal p { color: #aaa; font-size: 0.9rem; margin-bottom: 24px; }
+
+    .auth-modal h2 {
+      color: #c8a96e;
+      margin-bottom: 8px;
+      font-size: 1.5rem;
+    }
+
+    .auth-modal p {
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
     .auth-modal input {
       width: 100%;
       background: #2a2a2a;
@@ -66,7 +81,11 @@
       box-sizing: border-box;
       outline: none;
     }
-    .auth-modal input:focus { border-color: #c8a96e; }
+
+    .auth-modal input:focus {
+      border-color: #c8a96e;
+    }
+
     .auth-btn {
       width: 100%;
       background: #c8a96e;
@@ -80,10 +99,36 @@
       margin-bottom: 10px;
       transition: background 0.2s;
     }
-    .auth-btn:hover { background: #e0bc7e; }
-    .auth-toggle { color: #c8a96e; cursor: pointer; font-size: 0.88rem; text-align: center; display: block; margin-top: 10px; }
-    .auth-error { color: #ff6b6b; font-size: 0.85rem; margin-bottom: 10px; min-height: 20px; }
-    .auth-close { float: right; background: none; border: none; color: #aaa; font-size: 1.4rem; cursor: pointer; margin-top: -10px; }
+
+    .auth-btn:hover {
+      background: #e0bc7e;
+    }
+
+    .auth-toggle {
+      color: #c8a96e;
+      cursor: pointer;
+      font-size: 0.88rem;
+      text-align: center;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .auth-error {
+      color: #ff6b6b;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      min-height: 20px;
+    }
+
+    .auth-close {
+      float: right;
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 1.4rem;
+      cursor: pointer;
+      margin-top: -10px;
+    }
 
     /* User bar in header */
     .user-bar {
@@ -91,7 +136,12 @@
       align-items: center;
       gap: 10px;
     }
-    .user-bar .user-name { color: #c8a96e; font-size: 0.85rem; }
+
+    .user-bar .user-name {
+      color: #c8a96e;
+      font-size: 0.85rem;
+    }
+
     .user-bar .logout-btn {
       background: transparent;
       border: 1px solid #c8a96e;
@@ -102,7 +152,12 @@
       font-size: 0.82rem;
       transition: all 0.2s;
     }
-    .user-bar .logout-btn:hover { background: #c8a96e; color: #000; }
+
+    .user-bar .logout-btn:hover {
+      background: #c8a96e;
+      color: #000;
+    }
+
     .login-nav-btn {
       background: #c8a96e;
       color: #000 !important;
@@ -128,9 +183,19 @@
       opacity: 0;
       transition: all 0.35s ease;
     }
-    .toast.show { transform: translateY(0); opacity: 1; }
-    .toast.success { border-color: #4caf50; }
-    .toast.error { border-color: #f44336; }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-color: #4caf50;
+    }
+
+    .toast.error {
+      border-color: #f44336;
+    }
   </style>
 
   <!-- 
@@ -247,16 +312,16 @@
               <span class="span">Menus</span>
             </a>
           </li>
-		  
-		  <li class="navbar-item">
+
+          <li class="navbar-item">
             <a href="#olreserve" class="navbar-link hover-underline">
               <div class="separator"></div>
 
               <span class="span">Online Reservation</span>
             </a>
           </li>
-		  
-		  <li class="navbar-item">
+
+          <li class="navbar-item">
             <a href="#event" class="navbar-link hover-underline">
               <div class="separator"></div>
 
@@ -297,7 +362,7 @@
 
       </nav>
 
-      
+
 
       <!-- Auth area in header -->
       <div id="authArea" class="user-bar" style="margin-right:10px;">
@@ -347,7 +412,7 @@
               Come with family & feel the Joy of food
             </p>
 
-            
+
 
           </li>
 
@@ -368,7 +433,7 @@
               Come with family & feel the Joy of food
             </p>
 
-            
+
 
           </li>
 
@@ -389,7 +454,7 @@
               Come with family & feel the Joy of food
             </p>
 
-            
+
 
           </li>
 
@@ -403,7 +468,7 @@
           <ion-icon name="chevron-forward"></ion-icon>
         </button>
 
-        
+
 
       </section>
 
@@ -525,19 +590,19 @@
             <h2 class="headline-1 section-title">Every Flavor Tells a Story</h2>
 
             <p class="section-text">
-              
-			At Joy's View, we want to share delicious food and stunning scenery with you. 
-			Located by Laguna de Bay and the Sierra Madre, our restaurant is a special place 
-			for food lovers and nature fans. We make tasty dishes using local ingredients and 
-			flavors from around the world. Come join us for a meal with a beautiful view, and 
-			let's enjoy good food and good times together!
+
+              At Joy's View, we want to share delicious food and stunning scenery with you.
+              Located by Laguna de Bay and the Sierra Madre, our restaurant is a special place
+              for food lovers and nature fans. We make tasty dishes using local ingredients and
+              flavors from around the world. Come join us for a meal with a beautiful view, and
+              let's enjoy good food and good times together!
             </p>
 
             <div class="contact-label">Book Through Call</div>
 
             <a href="tel:+804001234567" class="body-1 contact-number hover-underline">0926 776 8263</a>
 
-            
+
 
           </div>
 
@@ -587,15 +652,15 @@
             <h2 class="headline-1 section-title">Quesadillas</h2>
 
             <p class="section-text">
-              A quesadilla is a simple yet satisfying dish consisting of a tortilla filled with melted 
-			  cheese and often other ingredients like seasoned meats, vegetables, or beans. 
+              A quesadilla is a simple yet satisfying dish consisting of a tortilla filled with melted
+              cheese and often other ingredients like seasoned meats, vegetables, or beans.
             </p>
 
             <div class="wrapper">
               <span class="span body-1">₱135.00 - ₱200.00</span>
             </div>
 
-            
+
 
           </div>
         </div>
@@ -644,7 +709,8 @@
                   </div>
 
                   <p class="card-text label-1">
-                    Flavorful and satisfying dish featuring tender pieces of chicken served over a bed of fluffy rice and corn in the side dish.
+                    Flavorful and satisfying dish featuring tender pieces of chicken served over a bed of fluffy rice
+                    and corn in the side dish.
                   </p>
 
                 </div>
@@ -671,8 +737,8 @@
                   </div>
 
                   <p class="card-text label-1">
-                    Layers of flat pasta sheets, rich tomato sauce, creamy béchamel sauce, and flavorful 
-					fillings such as ground meat, vegetables, and cheese partnered with french toast bread.
+                    Layers of flat pasta sheets, rich tomato sauce, creamy béchamel sauce, and flavorful
+                    fillings such as ground meat, vegetables, and cheese partnered with french toast bread.
                   </p>
 
                 </div>
@@ -699,7 +765,7 @@
                   </div>
 
                   <p class="card-text label-1">
-                   Italian pasta dish known for its rich and creamy sauce also served with french toast bread.
+                    Italian pasta dish known for its rich and creamy sauce also served with french toast bread.
                   </p>
 
                 </div>
@@ -728,7 +794,8 @@
                   </div>
 
                   <p class="card-text label-1">
-                    Italian pasta dish that combines succulent shrimp with a creamy Alfredo sauce served with french toast bread.
+                    Italian pasta dish that combines succulent shrimp with a creamy Alfredo sauce served with french
+                    toast bread.
                   </p>
                   </p>
 
@@ -756,7 +823,8 @@
                   </div>
 
                   <p class="card-text label-1">
-                    Mexican-inspired snack or appetizer consisting of tortilla chips topped with melted cheese and a variety of flavorful toppings.
+                    Mexican-inspired snack or appetizer consisting of tortilla chips topped with melted cheese and a
+                    variety of flavorful toppings.
                   </p>
 
                 </div>
@@ -795,10 +863,10 @@
 
           <p class="menu-text text-center">
             Weekdays daily from <span class="span">4:30 pm</span> to <span class="span">8:30 pm</span> <br>
-			Weekends daily from <span class="span">6:30 pm</span> to <span class="span">8:30 pm</span>
+            Weekends daily from <span class="span">6:30 pm</span> to <span class="span">8:30 pm</span>
           </p>
 
-          
+
 
           <img src="./assets/images/shape-5.png" width="921" height="1036" loading="lazy" alt="shape"
             class="shape shape-2 move-anim">
@@ -823,8 +891,8 @@
           <div class="quote">”</div>
 
           <p class="headline-2 testi-text">
-            Recommended for tastier and Good food, perfect for barkada bonding place, scenic view, affordable price. 
-			We will surely come back again... See you around....
+            Recommended for tastier and Good food, perfect for barkada bonding place, scenic view, affordable price.
+            We will surely come back again... See you around....
           </p>
 
           <div class="wrapper">
@@ -834,8 +902,8 @@
           </div>
 
           <div class="profile">
-            <img src="./assets/images/testi-avatar.jpg" width="100" height="100" loading="lazy" alt="Crezhelda Bulig Cunanan "
-              class="img">
+            <img src="./assets/images/testi-avatar.jpg" width="100" height="100" loading="lazy"
+              alt="Crezhelda Bulig Cunanan " class="img">
 
             <p class="label-2 profile-name">Crezhelda Bulig Cunanan </p>
           </div>
@@ -858,79 +926,85 @@
 
             <form action="" class="form-left" id="reservationForm" onsubmit="submitReservation(event)">
 
-  <h2 class="headline-1 text-center">Online Reservation</h2>
+              <h2 class="headline-1 text-center">Online Reservation</h2>
 
-  <p class="form-text text-center">
-    Booking request <a href="tel:09267768263" class="link">0926 776 8263</a>
-    or fill out the order form
-  </p>
+              <p class="form-text text-center">
+                Booking request <a href="tel:09267768263" class="link">0926 776 8263</a>
+                or fill out the order form
+              </p>
 
-  <div id="loginPrompt" style="display:none; background:#2a2a2a; border:1px solid #c8a96e; border-radius:8px; padding:16px; margin-bottom:16px; text-align:center;">
-    <p style="color:#fff; margin-bottom:10px; font-family:'DM Sans',sans-serif;">Please log in to make a reservation.</p>
-    <button type="button" onclick="openAuthModal()" class="btn btn-secondary" style="font-size:0.9rem;">
-      <span class="text text-1">Log In / Sign Up</span>
-      <span class="text text-2" aria-hidden="true">Log In / Sign Up</span>
-    </button>
-  </div>
+              <div id="loginPrompt"
+                style="display:none; background:#2a2a2a; border:1px solid #c8a96e; border-radius:8px; padding:16px; margin-bottom:16px; text-align:center;">
+                <p style="color:#fff; margin-bottom:10px; font-family:'DM Sans',sans-serif;">Please log in to make a
+                  reservation.</p>
+                <button type="button" onclick="openAuthModal()" class="btn btn-secondary" style="font-size:0.9rem;">
+                  <span class="text text-1">Log In / Sign Up</span>
+                  <span class="text text-2" aria-hidden="true">Log In / Sign Up</span>
+                </button>
+              </div>
 
-  <div id="formFields">
-  <div class="input-wrapper">
-    <input type="text" name="name" id="resName" placeholder="Your Name" autocomplete="off" class="input-field" required>
-    <input type="tel" name="phone" id="resPhone" placeholder="Phone Number" autocomplete="off" class="input-field" required>
-    <input type="email" name="email" id="resEmail" placeholder="Your Email" autocomplete="off" class="input-field" required>
-  </div>
+              <div id="formFields">
+                <div class="input-wrapper">
+                  <input type="text" name="name" id="resName" placeholder="Your Name" autocomplete="off"
+                    class="input-field" required>
+                  <input type="tel" name="phone" id="resPhone" placeholder="Phone Number" autocomplete="off"
+                    class="input-field" required>
+                  <input type="email" name="email" id="resEmail" placeholder="Your Email" autocomplete="off"
+                    class="input-field" required>
+                </div>
 
-  <div class="input-wrapper">
-    <div class="icon-wrapper">
-      <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
-      <select name="person" id="resPerson" class="input-field">
-        <option value="1 Person">1 Person</option>
-        <option value="2 Persons">2 Persons</option>
-        <option value="3 Persons">3 Persons</option>
-        <option value="4 Persons">4 Persons</option>
-        <option value="5 Persons">5 Persons</option>
-        <option value="6 Persons">6 Persons</option>
-        <option value="7 Persons">7 Persons</option>
-      </select>
-      <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-    </div>
-    <div class="icon-wrapper">
-      <ion-icon name="calendar-clear-outline" aria-hidden="true"></ion-icon>
-      <input type="date" name="reservation-date" id="resDate" class="input-field" required>
-      <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-    </div>
-    <div class="icon-wrapper">
-      <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
-      <select name="time" id="resTime" class="input-field">
-        <option value="08:00 AM">08 : 00 am</option>
-        <option value="09:00 AM">09 : 00 am</option>
-        <option value="10:00 AM">10 : 00 am</option>
-        <option value="11:00 AM">11 : 00 am</option>
-        <option value="12:00 PM">12 : 00 pm</option>
-        <option value="01:00 PM">01 : 00 pm</option>
-        <option value="02:00 PM">02 : 00 pm</option>
-        <option value="03:00 PM">03 : 00 pm</option>
-        <option value="04:00 PM">04 : 00 pm</option>
-        <option value="05:00 PM">05 : 00 pm</option>
-        <option value="06:00 PM">06 : 00 pm</option>
-        <option value="07:00 PM">07 : 00 pm</option>
-        <option value="08:00 PM">08 : 00 pm</option>
-        <option value="09:00 PM">09 : 00 pm</option>
-        <option value="10:00 PM">10 : 00 pm</option>
-      </select>
-      <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-    </div>
-  </div>
+                <div class="input-wrapper">
+                  <div class="icon-wrapper">
+                    <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+                    <select name="person" id="resPerson" class="input-field">
+                      <option value="1 Person">1 Person</option>
+                      <option value="2 Persons">2 Persons</option>
+                      <option value="3 Persons">3 Persons</option>
+                      <option value="4 Persons">4 Persons</option>
+                      <option value="5 Persons">5 Persons</option>
+                      <option value="6 Persons">6 Persons</option>
+                      <option value="7 Persons">7 Persons</option>
+                    </select>
+                    <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                  </div>
+                  <div class="icon-wrapper">
+                    <ion-icon name="calendar-clear-outline" aria-hidden="true"></ion-icon>
+                    <input type="date" name="reservation-date" id="resDate" class="input-field" required>
+                    <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                  </div>
+                  <div class="icon-wrapper">
+                    <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
+                    <select name="time" id="resTime" class="input-field">
+                      <option value="08:00 AM">08 : 00 am</option>
+                      <option value="09:00 AM">09 : 00 am</option>
+                      <option value="10:00 AM">10 : 00 am</option>
+                      <option value="11:00 AM">11 : 00 am</option>
+                      <option value="12:00 PM">12 : 00 pm</option>
+                      <option value="01:00 PM">01 : 00 pm</option>
+                      <option value="02:00 PM">02 : 00 pm</option>
+                      <option value="03:00 PM">03 : 00 pm</option>
+                      <option value="04:00 PM">04 : 00 pm</option>
+                      <option value="05:00 PM">05 : 00 pm</option>
+                      <option value="06:00 PM">06 : 00 pm</option>
+                      <option value="07:00 PM">07 : 00 pm</option>
+                      <option value="08:00 PM">08 : 00 pm</option>
+                      <option value="09:00 PM">09 : 00 pm</option>
+                      <option value="10:00 PM">10 : 00 pm</option>
+                    </select>
+                    <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                  </div>
+                </div>
 
-  <textarea name="message" id="resMessage" placeholder="Message (optional)" autocomplete="off" class="input-field"></textarea>
+                <textarea name="message" id="resMessage" placeholder="Message (optional)" autocomplete="off"
+                  class="input-field"></textarea>
 
-  <button type="submit" class="btn btn-secondary" id="submitBtn">
-    <span class="text text-1">Book A Table</span>
-    <span class="text text-2" aria-hidden="true">Book A Table</span>
-  </button>
-  </div>
+                <button type="submit" class="btn btn-secondary" id="submitBtn">
+                  <span class="text text-1">Book A Table</span>
+                  <span class="text text-2" aria-hidden="true">Book A Table</span>
+                </button>
+              </div>
 
-</form>
+            </form>
 
             <div class="form-right text-center" style="background-image: url('./assets/images/form-pattern.png')">
 
@@ -994,7 +1068,7 @@
 
                 <h3 class="title-2 card-title">Hygienic Food</h3>
 
-                
+
 
               </div>
             </li>
@@ -1008,7 +1082,7 @@
 
                 <h3 class="title-2 card-title">Stunning View</h3>
 
-               
+
 
               </div>
             </li>
@@ -1022,7 +1096,7 @@
 
                 <h3 class="title-2 card-title">Skilled Chefs</h3>
 
-               
+
 
               </div>
             </li>
@@ -1036,7 +1110,7 @@
 
                 <h3 class="title-2 card-title">Event & Party</h3>
 
-              
+
 
               </div>
             </li>
@@ -1065,7 +1139,7 @@
 
           <p class="section-subtitle label-2 text-center">Recent Updates</p>
 
-          <h2 href = "#event" class="section-title headline-1 text-center">Upcoming Event</h2>
+          <h2 href="#event" class="section-title headline-1 text-center">Upcoming Event</h2>
 
           <ul class="grid-list">
 
@@ -1104,7 +1178,8 @@
                   <p class="card-subtitle label-2 text-center">Celebrate with Us!</p>
 
                   <h3 class="card-title title-2 text-center">
-                    As we celebrate our 3rd anniversary, we want to express our sincere gratitude for your unwavering support throughout the years. 
+                    As we celebrate our 3rd anniversary, we want to express our sincere gratitude for your unwavering
+                    support throughout the years.
                   </h3>
                 </div>
 
@@ -1124,9 +1199,9 @@
                 <div class="card-content">
                   <p class="card-subtitle label-2 text-center">Happy <3 Day</p>
 
-                  <h3 class="card-title title-2 text-center">
-                    Grab this chance! Treat your partner with our best seller rice meal
-                  </h3>
+                      <h3 class="card-title title-2 text-center">
+                        Grab this chance! Treat your partner with our best seller rice meal
+                      </h3>
                 </div>
 
               </div>
@@ -1134,7 +1209,7 @@
 
           </ul>
 
-          
+
 
         </div>
       </section>
@@ -1180,7 +1255,7 @@
             <div class="separator"></div>
           </div>
 
-          
+
 
 
         </div>
@@ -1216,8 +1291,8 @@
       <div class="footer-bottom">
 
         <p class="copyright">
-          &copy; 2024 Joy's View. All Rights Reserved | Created by <a href=""
-            target="_blank" class="link">Mythic Group</a>
+          &copy; 2024 Joy's View. All Rights Reserved | Created by <a href="" target="_blank" class="link">Mythic
+            Group</a>
         </p>
 
       </div>
@@ -1252,12 +1327,12 @@
     // Go to: Firebase Console > Project Settings > Your Apps > SDK setup
     // =============================================
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyAI__6j1u2qqZrfg0ckK1TH-OQ1wNPtlwQ",
+      authDomain: "joysview.firebaseapp.com",
+      projectId: "joysview",
+      storageBucket: "joysview.firebasestorage.app",
+      messagingSenderId: "84104072720",
+      appId: "1:84104072720:web:d5b9df043b23253da20495"
     };
 
     // ADMIN EMAIL — change to your admin email
@@ -1295,7 +1370,7 @@
     });
 
     // ---- Auth modal actions ----
-    window.doLogin = async function() {
+    window.doLogin = async function () {
       const email = document.getElementById('authEmail').value;
       const pass = document.getElementById('authPass').value;
       const err = document.getElementById('authError');
@@ -1304,12 +1379,12 @@
         await signInWithEmailAndPassword(auth, email, pass);
         closeAuthModal();
         showToast('Logged in successfully!', 'success');
-      } catch(e) {
+      } catch (e) {
         err.textContent = e.message.replace('Firebase: ', '');
       }
     };
 
-    window.doSignup = async function() {
+    window.doSignup = async function () {
       const email = document.getElementById('authEmail').value;
       const pass = document.getElementById('authPass').value;
       const err = document.getElementById('authError');
@@ -1318,18 +1393,18 @@
         await createUserWithEmailAndPassword(auth, email, pass);
         closeAuthModal();
         showToast('Account created! You are now logged in.', 'success');
-      } catch(e) {
+      } catch (e) {
         err.textContent = e.message.replace('Firebase: ', '');
       }
     };
 
-    window.doLogout = async function() {
+    window.doLogout = async function () {
       await signOut(auth);
       showToast('Logged out.', '');
     };
 
     // ---- Reservation submission ----
-    window.submitReservation = async function(e) {
+    window.submitReservation = async function (e) {
       e.preventDefault();
       if (!currentUser) { openAuthModal(); return; }
       const btn = document.getElementById('submitBtn');
@@ -1352,7 +1427,7 @@
         showToast('✅ Reservation sent! We will confirm shortly.', 'success');
         document.getElementById('reservationForm').reset();
         document.getElementById('resEmail').value = currentUser.email;
-      } catch(e) {
+      } catch (e) {
         showToast('Error: ' + e.message, 'error');
       }
       btn.disabled = false;
@@ -1397,7 +1472,7 @@
       document.getElementById('authError').textContent = '';
     }
     // Close modal on overlay click
-    document.getElementById('authModalOverlay').addEventListener('click', function(e) {
+    document.getElementById('authModalOverlay').addEventListener('click', function (e) {
       if (e.target === this) closeAuthModal();
     });
 
