@@ -448,7 +448,7 @@ html,body{min-height:100%; font-family:'DM Sans',sans-serif; background:var(--da
         </div>
         <div class="field-group">
           <label>Phone Number *</label>
-          <input type="tel" id="resPhone" placeholder="09XX XXX XXXX" inputmode="numeric" pattern="^(\\+63|63|0)9\\d{9}$" title="Enter a valid Philippine mobile number">
+          <input type="tel" id="resPhone" placeholder="09XXXXXXXXX" inputmode="numeric" minlength="11" maxlength="11" pattern="09[0-9]{9}" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,11)" title="Enter an 11-digit mobile number starting with 09">
         </div>
       </div>
       <div class="field-row single">
@@ -601,8 +601,8 @@ function showToast(msg, type='') {
 }
 
 function isValidPHPhone(phone) {
-  const normalized = phone.replace(/[\s()-]/g, '');
-  return /^(\+63|63|0)9\d{9}$/.test(normalized);
+  const normalized = phone.trim();
+  return /^09\d{9}$/.test(normalized);
 }
 
 // Set min date to tomorrow
@@ -879,7 +879,7 @@ window.submitReservation = async function() {
 
   if (!isValidPHPhone(phone)) {
     errorBox.className = 'error-box show';
-    errorBox.textContent = 'Please enter a valid Philippine mobile number.';
+    errorBox.textContent = 'Please enter a valid 11-digit mobile number in 09XXXXXXXXX format.';
     return;
   }
 

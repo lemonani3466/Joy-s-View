@@ -360,7 +360,7 @@
             <div id="resFormFields">
               <div class="input-wrapper">
                 <input type="text" name="name" id="resName" placeholder="Your Name" autocomplete="off" class="input-field" required>
-                <input type="tel" name="phone" id="resPhone" placeholder="09XX XXX XXXX" autocomplete="off" class="input-field" inputmode="numeric" pattern="^(\\+63|63|0)9\\d{9}$" title="Enter a valid Philippine mobile number" required>
+                <input type="tel" name="phone" id="resPhone" placeholder="09XXXXXXXXX" autocomplete="off" class="input-field" inputmode="numeric" minlength="11" maxlength="11" pattern="09[0-9]{9}" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,11)" title="Enter an 11-digit mobile number starting with 09" required>
                 <input type="email" name="email" id="resEmail" placeholder="Your Email" autocomplete="off" class="input-field" required>
               </div>
               <div class="input-wrapper">
@@ -620,8 +620,8 @@ function showToast(msg, type='') {
 }
 
 function isValidPHPhone(phone) {
-  const normalized = phone.replace(/[\s()-]/g, '');
-  return /^(\+63|63|0)9\d{9}$/.test(normalized);
+  const normalized = phone.trim();
+  return /^09\d{9}$/.test(normalized);
 }
 
 // ── NOTIFICATIONS ──
@@ -886,7 +886,7 @@ window.submitReservation = async (e) => {
   const persons=document.getElementById('resPerson').value;
   const message=document.getElementById('resMessage').value.trim();
   if (!name||!phone||!email||!date){showToast('Please fill in all required fields.','error');return;}
-  if (!isValidPHPhone(phone)){showToast('Please enter a valid Philippine mobile number.','error');return;}
+  if (!isValidPHPhone(phone)){showToast('Please enter a valid 11-digit mobile number in 09XXXXXXXXX format.','error');return;}
   if (bookedDates.has(date)){showToast('This date is fully booked. Please choose another.','error');return;}
   try {
     const conflictSnap = await getDocs(query(
