@@ -270,7 +270,7 @@ tbody td { padding:12px 16px; color:#ddd; vertical-align:middle; }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
-  getFirestore, collection, getDocs, doc, updateDoc, orderBy, query
+  getFirestore, collection, getDocs, doc, updateDoc, orderBy, query, where, addDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -295,6 +295,48 @@ const db = getFirestore(app);
 
 let allReservations = [];
 let adminNotifications = [];
+
+function formatNotifTime(date = new Date()) {
+  return date.toLocaleString('en-PH', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+async function createCustomerNotification(reservation, status, message) {
+  if (!reservation?.userId) return;
+  const icon = status === 'confirmed' ? '✅' : status === 'cancelled' ? '❌' : '📅';
+  await addDoc(collection(db, 'notifications'), {
+    userId: reservation.userId,
+    reservationId: reservation.id,
+    status,
+    icon,
+    title: message,
+    read: false,
+    createdAt: serverTimestamp()
+  });
+}
+
+async function cancelConflictingReservations(confirmedReservation) {
+  const conflictQuery = query(
+    collection(db, 'reservations'),
+    where('date', '==', confirmedReservation.date)
+  );
+  const snap = await getDocs(conflictQuery);
+  const conflicts = snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .filter(r => r.id !== confirmedReservation.id && r.status !== 'cancelled');
+
+  for (const conflict of conflicts) {
+    await updateDoc(doc(db, 'reservations', conflict.id), { status: 'cancelled' });
+    const localConflict = allReservations.find(x => x.id === conflict.id);
+    if (localConflict) localConflict.status = 'cancelled';
+    await createCustomerNotification(
+      conflict,
+      'cancelled',
+      `Your reservation for ${conflict.date} at ${conflict.time || 'the selected time'} was cancelled because that date is no longer available. Please choose a different date.`
+    );
+  }
+
+  return conflicts;
+}
 
 // EmailJS
 function loadEmailJS() {
@@ -451,7 +493,7 @@ window.renderTable = function() {
         <td style="max-width:140px;word-break:break-word;">${r.message||'<span style="color:#444">—</span>'}</td>
         <td style="white-space:nowrap;font-size:0.78rem;color:var(--muted);">${submitted}</td>
         <td>
-          <select class="status-select" data-id="${r.id}" data-email="${r.email||''}" data-name="${r.name||''}" data-date="${r.date||''}" data-time="${r.time||''}" data-persons="${r.persons||''}" onchange="updateStatus(this)">
+          <select class="status-select" data-id="${r.id}" data-status="${r.status||'pending'}" data-email="${r.email||''}" data-name="${r.name||''}" data-date="${r.date||''}" data-time="${r.time||''}" data-persons="${r.persons||''}" onchange="updateStatus(this)">
             <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
             <option value="confirmed" ${r.status==='confirmed'?'selected':''}>Confirmed</option>
             <option value="cancelled" ${r.status==='cancelled'?'selected':''}>Cancelled</option>
@@ -464,24 +506,66 @@ window.renderTable = function() {
 window.updateStatus = async function(sel) {
   const id = sel.dataset.id;
   const newStatus = sel.value;
+  const previousStatus = sel.dataset.status || 'pending';
   const email = sel.dataset.email;
   const name = sel.dataset.name;
   const date = sel.dataset.date;
   const time = sel.dataset.time;
   const persons = sel.dataset.persons;
+  const reservation = allReservations.find(x => x.id === id);
+
+  if (!reservation) {
+    showToast('Reservation record not found.', 'error');
+    await loadReservations();
+    return;
+  }
+
+  if (newStatus === previousStatus) return;
+
+  if (newStatus === 'confirmed') {
+    const confirmMessage = `Confirm reservation for ${name} on ${date} at ${time}? Other reservations on the same date will be cancelled automatically.`;
+    if (!window.confirm(confirmMessage)) {
+      sel.value = previousStatus;
+      return;
+    }
+
+    const existingConfirmed = allReservations.find(x =>
+      x.id !== id && x.date === date && x.status === 'confirmed'
+    );
+    if (existingConfirmed) {
+      showToast(`Cannot confirm this reservation. ${date} is already booked.`, 'error');
+      sel.value = previousStatus;
+      return;
+    }
+  }
 
   try {
     await updateDoc(doc(db, 'reservations', id), { status: newStatus });
-    const r = allReservations.find(x => x.id === id);
+    const r = reservation;
     if (r) r.status = newStatus;
+    sel.dataset.status = newStatus;
     updateStats();
 
-    const now = new Date().toLocaleString('en-PH', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    const now = formatNotifTime();
 
     if (newStatus === 'confirmed') {
       const label = `✅ Confirmed: ${name} — ${date} at ${time}`;
       addAdminNotification('✅', label, now);
       showToast('Reservation confirmed! Sending email…', 'success');
+      const cancelledConflicts = await cancelConflictingReservations(r);
+      await createCustomerNotification(
+        r,
+        'confirmed',
+        `Hi ${name}, your reservation for ${date} at ${time} for ${persons || 'your group'} guest(s) has been confirmed by Joy's View.`
+      );
+      updateStats();
+      renderTable();
+      showToast(
+        cancelledConflicts.length
+          ? `Reservation confirmed. ${cancelledConflicts.length} conflicting reservation(s) were cancelled. Sending email...`
+          : 'Reservation confirmed! Sending email...',
+        'success'
+      );
       // Send confirmation email to customer
       try {
         await loadEmailJS();
@@ -520,7 +604,23 @@ window.updateStatus = async function(sel) {
       showToast('Status updated to pending.', '');
     }
 
+    if (newStatus === 'cancelled') {
+      await createCustomerNotification(
+        r,
+        'cancelled',
+        `Your reservation for ${date} at ${time} was cancelled by Joy's View. Please choose another date if you'd still like to book.`
+      );
+    }
+    if (newStatus === 'pending') {
+      await createCustomerNotification(
+        r,
+        'pending',
+        `Your reservation for ${date} at ${time} is pending review by Joy's View.`
+      );
+    }
+    renderTable();
   } catch(e) {
+    sel.value = previousStatus;
     showToast('Update failed: ' + e.message, 'error');
   }
 };

@@ -533,7 +533,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
   getFirestore, collection, addDoc, query, where, getDocs,
-  orderBy, serverTimestamp, Timestamp
+  orderBy, serverTimestamp, Timestamp, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -558,6 +558,10 @@ const db = getFirestore(app);
 let currentUser = null;
 let bookedDates = new Set();
 let userNotifications = [];
+let stopNotificationsListener = null;
+let stopReservationsListener = null;
+let hasLoadedNotificationSnapshot = false;
+let seenNotificationIds = new Set();
 
 // EmailJS loader
 function loadEmailJS() {
@@ -617,6 +621,29 @@ window.checkDateAvailability = function() {
 };
 
 // Load user's own reservations
+function renderMyReservationsFromDocs(docs) {
+  const card = document.getElementById('myReservationsCard');
+  const list = document.getElementById('myResList');
+  card.style.display = 'block';
+  if (!docs.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:0.84rem;text-align:center;padding:12px;">No reservations yet.</div>';
+    return;
+  }
+  list.innerHTML = docs.map(d => {
+    const r = typeof d.data === 'function' ? d.data() : d;
+    const badgeClass = r.status === 'confirmed' ? 'confirmed' : r.status === 'cancelled' ? 'cancelled' : 'pending';
+    const label = r.status === 'confirmed' ? 'Confirmed' : r.status === 'cancelled' ? 'Cancelled' : 'Pending';
+    return `
+      <div class="my-res-item">
+        <div class="mri-row">
+          <span class="mri-date">${r.date || 'â€”'}</span>
+          <span class="mri-badge ${badgeClass}">${label}</span>
+        </div>
+        <div class="mri-details">${r.time || ''} Â· ${r.persons || ''} Â· ${r.name || ''}</div>
+      </div>`;
+  }).join('');
+}
+
 async function loadMyReservations(uid) {
   const card = document.getElementById('myReservationsCard');
   const list = document.getElementById('myResList');
@@ -644,6 +671,16 @@ async function loadMyReservations(uid) {
   } catch(e) {
     list.innerHTML = '<div style="color:var(--red);font-size:0.82rem;">Could not load reservations.</div>';
   }
+}
+
+function subscribeMyReservations(uid) {
+  if (stopReservationsListener) stopReservationsListener();
+  const reservationsQuery = query(collection(db, 'reservations'), where('userId', '==', uid), orderBy('createdAt', 'desc'));
+  stopReservationsListener = onSnapshot(reservationsQuery, async () => {
+    await loadMyReservations(uid);
+  }, async () => {
+    await loadMyReservations(uid);
+  });
 }
 
 // Notifications
@@ -678,6 +715,54 @@ function renderNotifications() {
       </div>
       ${!n.read ? '<span class="ni-unread-dot"></span>' : ''}
     </div>`).join('');
+}
+
+function mapNotificationDoc(docSnap) {
+  const data = docSnap.data();
+  const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : new Date();
+  return {
+    id: docSnap.id,
+    icon: data.icon || '📅',
+    title: data.title || 'Reservation update',
+    time: createdAt.toLocaleString('en-PH', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }),
+    read: !!data.read,
+    status: data.status || 'pending'
+  };
+}
+
+function showIncomingReservationToast(notification) {
+  const prefix = notification.status === 'confirmed'
+    ? 'Reservation confirmed: '
+    : notification.status === 'cancelled'
+      ? 'Reservation update: '
+      : 'Reservation notice: ';
+  const toastType = notification.status === 'confirmed'
+    ? 'success'
+    : notification.status === 'cancelled'
+      ? 'error'
+      : '';
+  showToast(prefix + notification.title, toastType);
+}
+
+function subscribeUserNotifications(uid) {
+  if (stopNotificationsListener) stopNotificationsListener();
+  const notifQuery = query(collection(db, 'notifications'), where('userId', '==', uid));
+  stopNotificationsListener = onSnapshot(notifQuery, (snap) => {
+    const nextNotifications = snap.docs
+      .map(mapNotificationDoc)
+      .sort((a, b) => b.id.localeCompare(a.id));
+    if (hasLoadedNotificationSnapshot) {
+      const incoming = nextNotifications.filter(n => !seenNotificationIds.has(n.id) && !n.read);
+      if (incoming.length) showIncomingReservationToast(incoming[0]);
+    } else {
+      hasLoadedNotificationSnapshot = true;
+    }
+    seenNotificationIds = new Set(nextNotifications.map(n => n.id));
+    userNotifications = nextNotifications;
+    renderNotifications();
+  }, () => {
+    loadUserNotifications();
+  });
 }
 
 window.markRead = function(id) {
@@ -719,10 +804,22 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById('resName').value = user.displayName || '';
     document.getElementById('resEmail').value = user.email || '';
     await loadMyReservations(user.uid);
+    subscribeMyReservations(user.uid);
     loadUserNotifications();
+    subscribeUserNotifications(user.uid);
   } else if (user && user.email === ADMIN_EMAIL) {
     window.location.href = 'admin.html';
   } else {
+    if (stopNotificationsListener) {
+      stopNotificationsListener();
+      stopNotificationsListener = null;
+    }
+    if (stopReservationsListener) {
+      stopReservationsListener();
+      stopReservationsListener = null;
+    }
+    hasLoadedNotificationSnapshot = false;
+    seenNotificationIds = new Set();
     headerArea.innerHTML = `<a href="home.html" style="background:var(--gold);color:#000;font-weight:700;padding:8px 20px;border-radius:8px;text-decoration:none;font-size:0.88rem;">Login</a>`;
     loginPrompt.style.display = 'block';
   }
@@ -760,6 +857,25 @@ window.submitReservation = async function() {
   if (bookedDates.has(date)) {
     errorBox.className = 'error-box show';
     errorBox.textContent = 'This date is fully booked. Please select a different date.';
+    return;
+  }
+
+  try {
+    const conflictSnap = await getDocs(query(
+      collection(db, 'reservations'),
+      where('date', '==', date)
+    ));
+    const hasActiveConflict = conflictSnap.docs.some(d => d.data().status !== 'cancelled');
+    if (hasActiveConflict) {
+      errorBox.className = 'error-box show';
+      errorBox.textContent = 'This date already has an active reservation request. Please choose a different date.';
+      await loadBookedDates();
+      checkDateAvailability();
+      return;
+    }
+  } catch (conflictError) {
+    errorBox.className = 'error-box show';
+    errorBox.textContent = 'Could not validate date availability. Please try again.';
     return;
   }
 

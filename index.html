@@ -583,7 +583,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAI__6j1u2qqZrfg0ckK1TH-OQ1wNPtlwQ",
@@ -601,6 +601,9 @@ const db = getFirestore(app);
 let currentUser = null;
 let bookedDates = new Set();
 let notifications = [];
+let stopNotificationsListener = null;
+let hasLoadedNotificationSnapshot = false;
+let seenNotificationIds = new Set();
 
 // ── TOAST ──
 function showToast(msg, type='') {
@@ -644,6 +647,51 @@ function renderNotifications() {
       </div>
       ${!n.read?'<span class="ndd-dot"></span>':''}
     </div>`).join('');
+}
+function mapNotificationDoc(docSnap) {
+  const data = docSnap.data();
+  const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : new Date();
+  return {
+    id: docSnap.id,
+    icon: data.icon || '📅',
+    title: data.title || 'Reservation update',
+    time: createdAt.toLocaleString('en-PH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+    read: !!data.read,
+    status: data.status || 'pending'
+  };
+}
+function showIncomingReservationToast(notification) {
+  const prefix = notification.status === 'confirmed'
+    ? 'Reservation confirmed: '
+    : notification.status === 'cancelled'
+      ? 'Reservation update: '
+      : 'Reservation notice: ';
+  const toastType = notification.status === 'confirmed'
+    ? 'success'
+    : notification.status === 'cancelled'
+      ? 'error'
+      : '';
+  showToast(prefix + notification.title, toastType);
+}
+function subscribeUserNotifications(uid) {
+  if (stopNotificationsListener) stopNotificationsListener();
+  const notifQuery = query(collection(db, 'notifications'), where('userId', '==', uid));
+  stopNotificationsListener = onSnapshot(notifQuery, (snap) => {
+    const nextNotifications = snap.docs
+      .map(mapNotificationDoc)
+      .sort((a, b) => b.id.localeCompare(a.id));
+    if (hasLoadedNotificationSnapshot) {
+      const incoming = nextNotifications.filter(n => !seenNotificationIds.has(n.id) && !n.read);
+      if (incoming.length) showIncomingReservationToast(incoming[0]);
+    } else {
+      hasLoadedNotificationSnapshot = true;
+    }
+    seenNotificationIds = new Set(nextNotifications.map(n => n.id));
+    notifications = nextNotifications;
+    renderNotifications();
+  }, () => {
+    loadNotifications(uid);
+  });
 }
 window.markRead = (id) => {
   notifications = notifications.map(n=>n.id===id?{...n,read:true}:n);
@@ -762,8 +810,15 @@ onAuthStateChanged(auth,(user)=>{
       document.getElementById('resEmail').value=user.email||'';
     }
     loadNotifications(user.uid);
+    subscribeUserNotifications(user.uid);
     loadBookedDates();
   } else {
+    if (stopNotificationsListener) {
+      stopNotificationsListener();
+      stopNotificationsListener = null;
+    }
+    hasLoadedNotificationSnapshot = false;
+    seenNotificationIds = new Set();
     loginBtn.style.display='';
     bellWrap.style.display='none';
     const pill = document.getElementById('userPill');
@@ -821,6 +876,22 @@ window.submitReservation = async (e) => {
   const message=document.getElementById('resMessage').value.trim();
   if (!name||!phone||!email||!date){showToast('Please fill in all required fields.','error');return;}
   if (bookedDates.has(date)){showToast('This date is fully booked. Please choose another.','error');return;}
+  try {
+    const conflictSnap = await getDocs(query(
+      collection(db,'reservations'),
+      where('date','==',date)
+    ));
+    const hasActiveConflict = conflictSnap.docs.some(d => d.data().status !== 'cancelled');
+    if (hasActiveConflict){
+      showToast('This date already has an active reservation request. Please choose another.','error');
+      await loadBookedDates();
+      checkDateAvailInline();
+      return;
+    }
+  } catch(err){
+    showToast('Could not validate date availability. Please try again.','error');
+    return;
+  }
   try {
     await addDoc(collection(db,'reservations'),{
       userId:currentUser.uid, userEmail:currentUser.email,
