@@ -1,1497 +1,736 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joy's View - Good Food & Splendid View</title>
+<meta name="title" content="Joy's View - Good Food & Splendid View">
+<meta name="description" content="Joy's View Restaurant - Good food with a splendid view of Laguna de Bay">
+<link rel="shortcut icon" href="./Joy_s View.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/style.css">
 
-  <!-- 
-    - primary meta tags
-  -->
-  <title>Joy's View - Good Food & Splendid View</title>
-  <meta name="title" content="Joy's View - Good Food & Splendid View">
-  <meta name="description" content="This is a Restaurant html template made by codewithsadee">
+<style>
+/* ── AUTH MODAL ── */
+.auth-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.auth-modal-overlay.active{display:flex;}
+.auth-modal{background:#1a1a1a;border:1px solid #c8a96e;border-radius:14px;padding:40px 36px;width:100%;max-width:420px;color:#fff;font-family:'DM Sans',sans-serif;position:relative;animation:modalIn 0.25s ease;}
+@keyframes modalIn{from{opacity:0;transform:translateY(16px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.auth-modal h2{color:#c8a96e;margin-bottom:6px;font-size:1.5rem;}
+.auth-modal .auth-sub{color:#aaa;font-size:0.88rem;margin-bottom:22px;}
+.auth-modal input{width:100%;background:#2a2a2a;border:1px solid #444;border-radius:8px;padding:11px 14px;color:#fff;font-size:0.95rem;margin-bottom:12px;box-sizing:border-box;outline:none;transition:border-color 0.2s;font-family:'DM Sans',sans-serif;}
+.auth-modal input:focus{border-color:#c8a96e;}
+.auth-btn{width:100%;background:#c8a96e;color:#000;border:none;border-radius:8px;padding:13px;font-size:0.95rem;font-weight:700;cursor:pointer;margin-bottom:10px;transition:background 0.2s;font-family:'DM Sans',sans-serif;}
+.auth-btn:hover{background:#e0bc7e;}
+.auth-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.auth-toggle{color:#c8a96e;cursor:pointer;font-size:0.86rem;text-align:center;display:block;margin-top:8px;background:none;border:none;font-family:'DM Sans',sans-serif;width:100%;}
+.auth-error{color:#ff6b6b;font-size:0.83rem;margin-bottom:10px;min-height:18px;}
+.auth-close{position:absolute;top:14px;right:18px;background:none;border:none;color:#aaa;font-size:1.4rem;cursor:pointer;transition:color 0.2s;line-height:1;}
+.auth-close:hover{color:#fff;}
+.auth-tab-switch{display:flex;background:#111;border-radius:8px;padding:4px;margin-bottom:20px;}
+.auth-tab{flex:1;background:none;border:none;color:#888;font-size:0.86rem;font-family:'DM Sans',sans-serif;padding:7px;border-radius:6px;cursor:pointer;transition:all 0.2s;}
+.auth-tab.active{background:#222;color:#fff;}
+.auth-form-panel{display:none;}
+.auth-form-panel.active{display:block;}
 
-  <!-- 
-    - favicon
-  -->
-  <link rel="shortcut icon" href="./Joy_s View.svg" type="image/svg+xml">
+/* ── HEADER USER BAR ── */
+.user-bar{display:flex;align-items:center;gap:8px;}
+.user-bar .user-name{color:#c8a96e;font-size:0.82rem;}
+.user-bar .logout-btn{background:transparent;border:1px solid #c8a96e;color:#c8a96e;border-radius:6px;padding:5px 12px;cursor:pointer;font-size:0.8rem;transition:all 0.2s;}
+.user-bar .logout-btn:hover{background:#c8a96e;color:#000;}
+.login-nav-btn{background:#c8a96e;color:#000!important;border-radius:6px;padding:6px 16px!important;font-weight:700;}
 
-  <!-- 
-    - google font link
-  -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+/* ── TOAST ── */
+.toast{position:fixed;bottom:28px;right:28px;background:#1a1a1a;border:1px solid #c8a96e;color:#fff;padding:13px 22px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.88rem;z-index:99999;transform:translateY(80px);opacity:0;transition:all 0.3s;max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:#4caf50;}
+.toast.error{border-color:#f44336;}
 
-  <!-- 
-    - custom css link
-  -->
-  <link rel="stylesheet" href="./assets/css/style.css">
+/* ── NOTIFICATION BAR (customer) ── */
+.cust-notif-bar{background:linear-gradient(90deg,#1a0d00,#261500,#1a0d00);border-bottom:1px solid rgba(200,169,110,0.2);padding:9px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:0.82rem;font-family:'DM Sans',sans-serif;z-index:201;position:relative;}
+.cnb-badge{background:#c8a96e;color:#000;font-size:0.66rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:2px 8px;border-radius:4px;white-space:nowrap;}
+.cnb-text{color:rgba(240,237,232,0.7);}
+.cnb-text b,.cnb-text a{color:#c8a96e;}
+.cnb-text a{text-decoration:none;font-weight:600;}
+.cnb-close{background:none;border:none;color:#666;cursor:pointer;font-size:1rem;line-height:1;flex-shrink:0;}
 
-  <style>
-    /* Auth Modal */
-    .auth-modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-    }
+/* ── NOTIFICATION BELL ── */
+.notif-bell-wrap{position:relative;display:none;align-items:center;}
+.notif-bell-btn{background:transparent;border:1px solid rgba(200,169,110,0.3);color:#c8a96e;font-size:0.88rem;padding:5px 10px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s;}
+.notif-bell-btn:hover{background:rgba(200,169,110,0.1);}
+.nbb-count{background:#f44336;color:#fff;font-size:0.62rem;font-weight:700;padding:1px 5px;border-radius:8px;min-width:14px;text-align:center;display:none;}
+.nbb-count.has{display:inline-block;}
+.notif-dd{display:none;position:absolute;top:calc(100% + 10px);right:0;width:300px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;overflow:hidden;z-index:10001;box-shadow:0 16px 48px rgba(0,0,0,0.65);}
+.notif-dd.open{display:block;}
+.ndd-header{padding:13px 16px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;}
+.ndd-header span{font-weight:700;font-size:0.88rem;}
+.ndd-mark{background:none;border:none;color:#c8a96e;font-size:0.75rem;cursor:pointer;}
+.ndd-list{max-height:240px;overflow-y:auto;}
+.ndd-item{padding:11px 16px;border-bottom:1px solid #1e1e1e;cursor:pointer;display:flex;gap:10px;transition:background 0.12s;}
+.ndd-item:hover{background:#222;}
+.ndd-item.unread{background:rgba(200,169,110,0.04);}
+.ndd-item .ni{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.ndd-body{flex:1;}
+.ndd-title{font-size:0.81rem;font-weight:600;margin-bottom:2px;}
+.ndd-time{font-size:0.72rem;color:#666;}
+.ndd-dot{width:7px;height:7px;background:#c8a96e;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ndd-empty{padding:28px;text-align:center;color:#555;font-size:0.84rem;}
+</style>
 
-    .auth-modal-overlay.active {
-      display: flex;
-    }
-
-    .auth-modal {
-      background: #1a1a1a;
-      border: 1px solid #c8a96e;
-      border-radius: 12px;
-      padding: 40px 36px;
-      width: 100%;
-      max-width: 400px;
-      color: #fff;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .auth-modal h2 {
-      color: #c8a96e;
-      margin-bottom: 8px;
-      font-size: 1.5rem;
-    }
-
-    .auth-modal p {
-      color: #aaa;
-      font-size: 0.9rem;
-      margin-bottom: 24px;
-    }
-
-    .auth-modal input {
-      width: 100%;
-      background: #2a2a2a;
-      border: 1px solid #444;
-      border-radius: 8px;
-      padding: 12px 14px;
-      color: #fff;
-      font-size: 0.95rem;
-      margin-bottom: 14px;
-      box-sizing: border-box;
-      outline: none;
-    }
-
-    .auth-modal input:focus {
-      border-color: #c8a96e;
-    }
-
-    .auth-btn {
-      width: 100%;
-      background: #c8a96e;
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      padding: 13px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-bottom: 10px;
-      transition: background 0.2s;
-    }
-
-    .auth-btn:hover {
-      background: #e0bc7e;
-    }
-
-    .auth-toggle {
-      color: #c8a96e;
-      cursor: pointer;
-      font-size: 0.88rem;
-      text-align: center;
-      display: block;
-      margin-top: 10px;
-    }
-
-    .auth-error {
-      color: #ff6b6b;
-      font-size: 0.85rem;
-      margin-bottom: 10px;
-      min-height: 20px;
-    }
-
-    .auth-close {
-      float: right;
-      background: none;
-      border: none;
-      color: #aaa;
-      font-size: 1.4rem;
-      cursor: pointer;
-      margin-top: -10px;
-    }
-
-    /* User bar in header */
-    .user-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .user-bar .user-name {
-      color: #c8a96e;
-      font-size: 0.85rem;
-    }
-
-    .user-bar .logout-btn {
-      background: transparent;
-      border: 1px solid #c8a96e;
-      color: #c8a96e;
-      border-radius: 6px;
-      padding: 5px 12px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      transition: all 0.2s;
-    }
-
-    .user-bar .logout-btn:hover {
-      background: #c8a96e;
-      color: #000;
-    }
-
-    .login-nav-btn {
-      background: #c8a96e;
-      color: #000 !important;
-      border-radius: 6px;
-      padding: 6px 16px !important;
-      font-weight: 700;
-    }
-
-    /* Toast notification */
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #1a1a1a;
-      border: 1px solid #c8a96e;
-      color: #fff;
-      padding: 14px 22px;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.92rem;
-      z-index: 99999;
-      transform: translateY(100px);
-      opacity: 0;
-      transition: all 0.35s ease;
-    }
-
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .toast.success {
-      border-color: #4caf50;
-    }
-
-    .toast.error {
-      border-color: #f44336;
-    }
-  </style>
-
-  <!-- 
-    - preload images
-  -->
-  <link rel="preload" as="image" href="./assets/images/hero-slider-1.jpg">
-  <link rel="preload" as="image" href="./assets/images/hero-slider-2.jpg">
-  <link rel="preload" as="image" href="./assets/images/hero-slider-3.jpg">
-
+<link rel="preload" as="image" href="./assets/images/hero-slider-1.jpg">
+<link rel="preload" as="image" href="./assets/images/hero-slider-2.jpg">
+<link rel="preload" as="image" href="./assets/images/hero-slider-3.jpg">
 </head>
-
 <body id="top">
 
-  <!-- 
-    - #PRELOADER
-  -->
-
-  <div class="preload" data-preaload>
-    <div class="circle"></div>
-    <p class="text">Joy's View</p>
+<!-- ── NOTIFICATION BAR ── -->
+<div class="cust-notif-bar" id="custNotifBar">
+  <div style="display:flex;align-items:center;gap:10px;flex:1;">
+    <span class="cnb-badge">Joy's View</span>
+    <span class="cnb-text">
+      Open <b>Mon–Fri 4:30–8:30 PM</b> &amp; <b>Sat–Sun 6:30–8:30 PM</b>
+      &nbsp;·&nbsp; <a href="reservation.html">Book a table →</a>
+    </span>
   </div>
+  <button class="cnb-close" onclick="document.getElementById('custNotifBar').style.display='none'">✕</button>
+</div>
 
+<!-- #PRELOADER -->
+<div class="preload" data-preaload>
+  <div class="circle"></div>
+  <p class="text">Joy's View</p>
+</div>
 
-
-
-
-  <!-- 
-    - #TOP BAR
-  -->
-
-  <div class="topbar">
-    <div class="container">
-
-      <address class="topbar-item">
-        <div class="icon">
-          <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
-        </div>
-
-        <span class="span">
-          Kalayaan, Calabarzon, Philippines, Kalayaan, Philippines
-        </span>
-      </address>
-
-      <div class="separator"></div>
-
-      <div class="topbar-item item-2">
-        <div class="icon">
-          <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
-        </div>
-
-        <span class="span">Mon - Fri : 4:30.AM - 8:30.PM</span>
-      </div>
-
-      <a href="tel:+11234567890" class="topbar-item link">
-        <div class="icon">
-          <ion-icon name="call-outline" aria-hidden="true"></ion-icon>
-        </div>
-
-        <span class="span">0926 776 8263</span>
-      </a>
-
-      <div class="separator"></div>
-
-      <a href="Joymieabua@yahoo.com" class="topbar-item link">
-        <div class="icon">
-          <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
-        </div>
-
-        <span class="span">Joymieabua@yahoo.com</span>
-      </a>
-
+<!-- #TOP BAR -->
+<div class="topbar">
+  <div class="container">
+    <address class="topbar-item">
+      <div class="icon"><ion-icon name="location-outline" aria-hidden="true"></ion-icon></div>
+      <span class="span">Kalayaan, Calabarzon, Philippines</span>
+    </address>
+    <div class="separator"></div>
+    <div class="topbar-item item-2">
+      <div class="icon"><ion-icon name="time-outline" aria-hidden="true"></ion-icon></div>
+      <span class="span">Mon - Fri : 4:30.AM - 8:30.PM</span>
     </div>
+    <a href="tel:+09267768263" class="topbar-item link">
+      <div class="icon"><ion-icon name="call-outline" aria-hidden="true"></ion-icon></div>
+      <span class="span">0926 776 8263</span>
+    </a>
+    <div class="separator"></div>
+    <a href="mailto:Joymieabua@yahoo.com" class="topbar-item link">
+      <div class="icon"><ion-icon name="mail-outline" aria-hidden="true"></ion-icon></div>
+      <span class="span">Joymieabua@yahoo.com</span>
+    </a>
   </div>
+</div>
 
+<!-- #HEADER -->
+<header class="header" data-header>
+  <div class="container">
+    <a href="#" class="logo">
+      <img src="./assets/images/Joy_s View.png" width="160" height="50" alt="Joy's View - Home">
+    </a>
 
-
-
-
-  <!-- 
-    - #HEADER
-  -->
-
-  <header class="header" data-header>
-    <div class="container">
-
-      <a href="#" class="logo">
-        <img src="./assets/images/Joy_s View.png" width="160" height="50" alt="Joy's View - Home">
-      </a>
-
-      <nav class="navbar" data-navbar>
-
-        <button class="close-btn" aria-label="close menu" data-nav-toggler>
-          <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
-        </button>
-
-        <a href="#" class="logo">
-          <img src="./assets/images/Joy_s View.svg" width="160" height="50" alt="Joy's View - Home">
-        </a>
-
-        <ul class="navbar-list">
-
-          <li class="navbar-item">
-            <a href="#home" class="navbar-link hover-underline active">
-              <div class="separator"></div>
-
-              <span class="span">Home</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="#menu" class="navbar-link hover-underline">
-              <div class="separator"></div>
-
-              <span class="span">Menus</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="#olreserve" class="navbar-link hover-underline">
-              <div class="separator"></div>
-
-              <span class="span">Online Reservation</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="#event" class="navbar-link hover-underline">
-              <div class="separator"></div>
-
-              <span class="span">Events</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="#about" class="navbar-link hover-underline">
-              <div class="separator"></div>
-
-              <span class="span">About Us</span>
-            </a>
-          </li>
-
-
-        </ul>
-
-        <div class="text-center">
-          <p class="headline-1 navbar-title">Visit Us</p>
-
-          <address class="body-4">
-            Kalayaan, Calabarzon, Philippines, Kalayaan, Philippines
-          </address>
-
-          <p class="body-4 navbar-text">Open: Monday - Sunday</p>
-
-          <a href="Joymieabua@yahoo.com" class="body-4 sidebar-link">Joymieabua@yahoo.com</a>
-
-          <div class="separator"></div>
-
-          <p class="contact-label">Booking Request</p>
-
-          <a href="0926 776 8263" class="body-1 contact-number hover-underline">
-            0926 776 8263
-          </a>
-        </div>
-
-      </nav>
-
-
-
-      <!-- Auth area in header -->
-      <div id="authArea" class="user-bar" style="margin-right:10px;">
-        <a href="#" class="login-nav-btn navbar-link" onclick="openAuthModal(); return false;">Login</a>
-      </div>
-
-      <button class="nav-open-btn" aria-label="open menu" data-nav-toggler>
-        <span class="line line-1"></span>
-        <span class="line line-2"></span>
-        <span class="line line-3"></span>
+    <nav class="navbar" data-navbar>
+      <button class="close-btn" aria-label="close menu" data-nav-toggler>
+        <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
       </button>
-
-      <div class="overlay" data-nav-toggler data-overlay></div>
-
-    </div>
-  </header>
-
-
-
-
-
-  <main>
-    <article>
-
-      <!-- 
-        - #HERO
-      -->
-
-      <section class="hero text-center" aria-label="home" id="home">
-
-        <ul class="hero-slider" data-hero-slider>
-
-          <li class="slider-item active" data-hero-slider-item>
-
-            <div class="slider-bg">
-              <img src="./assets/images/hero-slider-1.jpg" width="1880" height="950" alt="" class="img-cover">
-            </div>
-
-            <p class="label-2 section-subtitle slider-reveal">Tradational & Hygine</p>
-
-            <h1 class="display-1 hero-title slider-reveal">
-              For the love of delicious food<br>
-              and stunning views
-            </h1>
-
-            <p class="body-2 hero-text slider-reveal">
-              Come with family & feel the Joy of food
-            </p>
-
-
-
-          </li>
-
-          <li class="slider-item" data-hero-slider-item>
-
-            <div class="slider-bg">
-              <img src="./assets/images/hero-slider-2.jpg" width="1880" height="950" alt="" class="img-cover">
-            </div>
-
-            <p class="label-2 section-subtitle slider-reveal">delightful experience</p>
-
-            <h1 class="display-1 hero-title slider-reveal">
-              Experience good food <br>
-              with a splendid view
-            </h1>
-
-            <p class="body-2 hero-text slider-reveal">
-              Come with family & feel the Joy of food
-            </p>
-
-
-
-          </li>
-
-          <li class="slider-item" data-hero-slider-item>
-
-            <div class="slider-bg">
-              <img src="./assets/images/hero-slider-3.jpg" width="1880" height="950" alt="" class="img-cover">
-            </div>
-
-            <p class="label-2 section-subtitle slider-reveal">amazing & delicious</p>
-
-            <h1 class="display-1 hero-title slider-reveal">
-              Where every flavor <br>
-              tells a story
-            </h1>
-
-            <p class="body-2 hero-text slider-reveal">
-              Come with family & feel the Joy of food
-            </p>
-
-
-
-          </li>
-
-        </ul>
-
-        <button class="slider-btn prev" aria-label="slide to previous" data-prev-btn>
-          <ion-icon name="chevron-back"></ion-icon>
-        </button>
-
-        <button class="slider-btn next" aria-label="slide to next" data-next-btn>
-          <ion-icon name="chevron-forward"></ion-icon>
-        </button>
-
-
-
-      </section>
-
-
-
-
-
-      <!-- 
-        - #SERVICE
-      -->
-
-      <section class="section service bg-black-10 text-center" aria-label="service">
-        <div class="container">
-
-          <p class="section-subtitle label-2"></p>
-
-          <h2 class="headline-1 section-title">We Offer Top Notch</h2>
-
-          <p class="section-text">
-            Joy's View wants you to experience good food with a splendid view of Laguna de Bay and the Sierra Mad
-          </p>
-
-          <ul class="grid-list">
-
-            <li>
-              <div class="service-card">
-
-                <a href="#" class="has-before hover:shine">
-                  <figure class="card-banner img-holder" style="--width: 285; --height: 336;">
-                    <img src="./assets/images/service-1.jpg" width="285" height="336" loading="lazy" alt="Rice Meal"
-                      class="img-cover">
-                  </figure>
-                </a>
-
-                <div class="card-content">
-
-                  <h3 class="title-4 card-title">
-                    <a href="#">Rice Meal</a>
-                  </h3>
-
-                  <a href="#menu" class="btn-text hover-underline label-2">View Menu</a>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="service-card">
-
-                <a href="#" class="has-before hover:shine">
-                  <figure class="card-banner img-holder" style="--width: 285; --height: 336;">
-                    <img src="./assets/images/service-2.jpg" width="285" height="336" loading="lazy" alt="Appetizers"
-                      class="img-cover">
-                  </figure>
-                </a>
-
-                <div class="card-content">
-
-                  <h3 class="title-4 card-title">
-                    <a href="#">Appetizers</a>
-                  </h3>
-
-                  <a href="#menu" class="btn-text hover-underline label-2">View Menu</a>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="service-card">
-
-                <a href="#" class="has-before hover:shine">
-                  <figure class="card-banner img-holder" style="--width: 285; --height: 336;">
-                    <img src="./assets/images/service-3.jpg" width="285" height="336" loading="lazy" alt="Drinks"
-                      class="img-cover">
-                  </figure>
-                </a>
-
-                <div class="card-content">
-
-                  <h3 class="title-4 card-title">
-                    <a href="#">Drinks</a>
-                  </h3>
-
-                  <a href="#menu" class="btn-text hover-underline label-2">View Menu</a>
-
-                </div>
-
-              </div>
-            </li>
-
-          </ul>
-
-          <img src="./assets/images/shape-1.png" width="246" height="412" loading="lazy" alt="shape"
-            class="shape shape-1 move-anim">
-          <img src="./assets/images/shape-2.png" width="343" height="345" loading="lazy" alt="shape"
-            class="shape shape-2 move-anim">
-
-        </div>
-      </section>
-
-
-
-
-
-      <!-- 
-        - #ABOUT
-      -->
-
-      <section class="section about text-center" aria-labelledby="about-label" id="about">
-        <div class="container">
-
-          <div class="about-content">
-
-            <p class="label-2 section-subtitle" id="about-label">Our Story</p>
-
-            <h2 class="headline-1 section-title">Every Flavor Tells a Story</h2>
-
-            <p class="section-text">
-
-              At Joy's View, we want to share delicious food and stunning scenery with you.
-              Located by Laguna de Bay and the Sierra Madre, our restaurant is a special place
-              for food lovers and nature fans. We make tasty dishes using local ingredients and
-              flavors from around the world. Come join us for a meal with a beautiful view, and
-              let's enjoy good food and good times together!
-            </p>
-
-            <div class="contact-label">Book Through Call</div>
-
-            <a href="tel:+804001234567" class="body-1 contact-number hover-underline">0926 776 8263</a>
-
-
-
-          </div>
-
-          <figure class="about-banner">
-
-            <img src="./assets/images/about-banner.jpg" width="570" height="570" loading="lazy" alt="about banner"
-              class="w-100" data-parallax-item data-parallax-speed="1">
-
-            <div class="abs-img abs-img-1 has-before" data-parallax-item data-parallax-speed="1.75">
-              <img src="./assets/images/about-abs-image.jpg" width="285" height="285" loading="lazy" alt=""
-                class="w-100">
-            </div>
-
-            <div class="abs-img abs-img-2 has-before">
-              <img src="./assets/images/badge-2.png" width="133" height="134" loading="lazy" alt="">
-            </div>
-
-          </figure>
-
-          <img src="./assets/images/shape-3.png" width="197" height="194" loading="lazy" alt="" class="shape">
-
-        </div>
-      </section>
-
-
-
-
-
-      <!-- 
-        - #SPECIAL DISH
-      -->
-
-      <section class="special-dish text-center" aria-labelledby="dish-label">
-
-        <div class="special-dish-banner">
-          <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy" alt="special dish"
-            class="img-cover">
-        </div>
-
-        <div class="special-dish-content bg-black-10">
-          <div class="container">
-
-            <img src="./assets/images/badge-1.png" width="28" height="41" loading="lazy" alt="badge" class="abs-img">
-
-            <p class="section-subtitle label-2">Special Dish</p>
-
-            <h2 class="headline-1 section-title">Quesadillas</h2>
-
-            <p class="section-text">
-              A quesadilla is a simple yet satisfying dish consisting of a tortilla filled with melted
-              cheese and often other ingredients like seasoned meats, vegetables, or beans.
-            </p>
-
-            <div class="wrapper">
-              <span class="span body-1">₱135.00 - ₱200.00</span>
-            </div>
-
-
-
-          </div>
-        </div>
-
-        <img src="./assets/images/shape-4.png" width="179" height="359" loading="lazy" alt="" class="shape shape-1">
-
-        <img src="./assets/images/shape-9.png" width="351" height="462" loading="lazy" alt="" class="shape shape-2">
-
-      </section>
-
-
-
-
-
-      <!-- 
-        - #MENU
-      -->
-
-      <section class="section menu" aria-label="menu-label" id="menu">
-        <div class="container">
-
-          <p class="section-subtitle text-center label-2">Joy's View Menu</p>
-
-          <h2 class="headline-1 section-title text-center">Menu</h2>
-
-          <ul class="grid-list">
-
-            <li>
-              <div class="menu-card hover:card">
-
-                <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                  <img src="./assets/images/menu-1.png" width="100" height="100" loading="lazy" alt="Greek Salad"
-                    class="img-cover">
-                </figure>
-
-                <div>
-
-                  <div class="title-wrapper">
-                    <h3 class="title-3">
-                      <a href="#" class="card-title">Chicken Rice Bowl</a>
-                    </h3>
-
-                    <span class="badge label-1">Top Sale</span>
-
-                    <span class="span title-2">₱75.00</span>
-                  </div>
-
-                  <p class="card-text label-1">
-                    Flavorful and satisfying dish featuring tender pieces of chicken served over a bed of fluffy rice
-                    and corn in the side dish.
-                  </p>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="menu-card hover:card">
-
-                <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                  <img src="./assets/images/menu-2.png" width="100" height="100" loading="lazy" alt="Lasagne"
-                    class="img-cover">
-                </figure>
-
-                <div>
-
-                  <div class="title-wrapper">
-                    <h3 class="title-3">
-                      <a href="#" class="card-title">Lasagna</a>
-                    </h3>
-
-                    <span class="span title-2">₱95.00</span>
-                  </div>
-
-                  <p class="card-text label-1">
-                    Layers of flat pasta sheets, rich tomato sauce, creamy béchamel sauce, and flavorful
-                    fillings such as ground meat, vegetables, and cheese partnered with french toast bread.
-                  </p>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="menu-card hover:card">
-
-                <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                  <img src="./assets/images/menu-3.png" width="100" height="100" loading="lazy" alt="Butternut Pumpkin"
-                    class="img-cover">
-                </figure>
-
-                <div>
-
-                  <div class="title-wrapper">
-                    <h3 class="title-3">
-                      <a href="#" class="card-title">Carbonara</a>
-                    </h3>
-
-                    <span class="span title-2">₱85.00</span>
-                  </div>
-
-                  <p class="card-text label-1">
-                    Italian pasta dish known for its rich and creamy sauce also served with french toast bread.
-                  </p>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="menu-card hover:card">
-
-                <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                  <img src="./assets/images/menu-4.png" width="100" height="100" loading="lazy" alt="Tokusen Wagyu"
-                    class="img-cover">
-                </figure>
-
-                <div>
-
-                  <div class="title-wrapper">
-                    <h3 class="title-3">
-                      <a href="#" class="card-title">Shrimp Alfredo</a>
-                    </h3>
-
-                    <span class="badge label-1"></span>
-
-                    <span class="span title-2">₱85.00</span>
-                  </div>
-
-                  <p class="card-text label-1">
-                    Italian pasta dish that combines succulent shrimp with a creamy Alfredo sauce served with french
-                    toast bread.
-                  </p>
-                  </p>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="menu-card hover:card">
-
-                <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                  <img src="./assets/images/menu-5.png" width="100" height="100" loading="lazy" alt="Olivas Rellenas"
-                    class="img-cover">
-                </figure>
-
-                <div>
-
-                  <div class="title-wrapper">
-                    <h3 class="title-3">
-                      <a href="#" class="card-title">Nachos</a>
-                    </h3>
-
-                    <span class="span title-2">₱85.00</span>
-                  </div>
-
-                  <p class="card-text label-1">
-                    Mexican-inspired snack or appetizer consisting of tortilla chips topped with melted cheese and a
-                    variety of flavorful toppings.
-                  </p>
-
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="menu-card hover:card">
-
-                <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                  <img src="./assets/images/menu-6.png" width="100" height="100" loading="lazy" alt="Opu Fish"
-                    class="img-cover">
-                </figure>
-
-                <div>
-
-                  <div class="title-wrapper">
-                    <h3 class="title-3">
-                      <a href="#" class="card-title">Affogato</a>
-                    </h3>
-
-                    <span class="span title-2">₱85.00</span>
-                  </div>
-
-                  <p class="card-text label-1">
-                    Italian dessert that combines two simple ingredients: vanilla gelato or ice cream, and hot espresso.
-                  </p>
-
-                </div>
-
-              </div>
-            </li>
-
-          </ul>
-
-          <p class="menu-text text-center">
-            Weekdays daily from <span class="span">4:30 pm</span> to <span class="span">8:30 pm</span> <br>
-            Weekends daily from <span class="span">6:30 pm</span> to <span class="span">8:30 pm</span>
-          </p>
-
-
-
-          <img src="./assets/images/shape-5.png" width="921" height="1036" loading="lazy" alt="shape"
-            class="shape shape-2 move-anim">
-          <img src="./assets/images/shape-6.png" width="343" height="345" loading="lazy" alt="shape"
-            class="shape shape-3 move-anim">
-
-        </div>
-      </section>
-
-
-
-
-
-      <!-- 
-        - #TESTIMONIALS
-      -->
-
-      <section class="section testi text-center has-bg-image"
-        style="background-image: url('./assets/images/testimonial-bg.jpg')" aria-label="testimonials">
-        <div class="container">
-
-          <div class="quote">”</div>
-
-          <p class="headline-2 testi-text">
-            Recommended for tastier and Good food, perfect for barkada bonding place, scenic view, affordable price.
-            We will surely come back again... See you around....
-          </p>
-
-          <div class="wrapper">
-            <div class="separator"></div>
-            <div class="separator"></div>
-            <div class="separator"></div>
-          </div>
-
-          <div class="profile">
-            <img src="./assets/images/testi-avatar.jpg" width="100" height="100" loading="lazy"
-              alt="Crezhelda Bulig Cunanan " class="img">
-
-            <p class="label-2 profile-name">Crezhelda Bulig Cunanan </p>
-          </div>
-
-        </div>
-      </section>
-
-
-
-
-
-      <!-- 
-        - #RESERVATION
-      -->
-
-      <section class="reservation" id="olreserve">
-        <div class="container">
-
-          <div class="form reservation-form bg-black-10">
-
-            <form action="" class="form-left" id="reservationForm" onsubmit="submitReservation(event)">
-
-              <h2 class="headline-1 text-center">Online Reservation</h2>
-
-              <p class="form-text text-center">
-                Booking request <a href="tel:09267768263" class="link">0926 776 8263</a>
-                or fill out the order form
-              </p>
-
-              <div id="loginPrompt"
-                style="display:none; background:#2a2a2a; border:1px solid #c8a96e; border-radius:8px; padding:16px; margin-bottom:16px; text-align:center;">
-                <p style="color:#fff; margin-bottom:10px; font-family:'DM Sans',sans-serif;">Please log in to make a
-                  reservation.</p>
-                <button type="button" onclick="openAuthModal()" class="btn btn-secondary" style="font-size:0.9rem;">
-                  <span class="text text-1">Log In / Sign Up</span>
-                  <span class="text text-2" aria-hidden="true">Log In / Sign Up</span>
-                </button>
-              </div>
-
-              <div id="formFields">
-                <div class="input-wrapper">
-                  <input type="text" name="name" id="resName" placeholder="Your Name" autocomplete="off"
-                    class="input-field" required>
-                  <input type="tel" name="phone" id="resPhone" placeholder="Phone Number" autocomplete="off"
-                    class="input-field" required>
-                  <input type="email" name="email" id="resEmail" placeholder="Your Email" autocomplete="off"
-                    class="input-field" required>
-                </div>
-
-                <div class="input-wrapper">
-                  <div class="icon-wrapper">
-                    <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
-                    <select name="person" id="resPerson" class="input-field">
-                      <option value="1 Person">1 Person</option>
-                      <option value="2 Persons">2 Persons</option>
-                      <option value="3 Persons">3 Persons</option>
-                      <option value="4 Persons">4 Persons</option>
-                      <option value="5 Persons">5 Persons</option>
-                      <option value="6 Persons">6 Persons</option>
-                      <option value="7 Persons">7 Persons</option>
-                    </select>
-                    <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                  </div>
-                  <div class="icon-wrapper">
-                    <ion-icon name="calendar-clear-outline" aria-hidden="true"></ion-icon>
-                    <input type="date" name="reservation-date" id="resDate" class="input-field" required>
-                    <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                  </div>
-                  <div class="icon-wrapper">
-                    <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
-                    <select name="time" id="resTime" class="input-field">
-                      <option value="08:00 AM">08 : 00 am</option>
-                      <option value="09:00 AM">09 : 00 am</option>
-                      <option value="10:00 AM">10 : 00 am</option>
-                      <option value="11:00 AM">11 : 00 am</option>
-                      <option value="12:00 PM">12 : 00 pm</option>
-                      <option value="01:00 PM">01 : 00 pm</option>
-                      <option value="02:00 PM">02 : 00 pm</option>
-                      <option value="03:00 PM">03 : 00 pm</option>
-                      <option value="04:00 PM">04 : 00 pm</option>
-                      <option value="05:00 PM">05 : 00 pm</option>
-                      <option value="06:00 PM">06 : 00 pm</option>
-                      <option value="07:00 PM">07 : 00 pm</option>
-                      <option value="08:00 PM">08 : 00 pm</option>
-                      <option value="09:00 PM">09 : 00 pm</option>
-                      <option value="10:00 PM">10 : 00 pm</option>
-                    </select>
-                    <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                  </div>
-                </div>
-
-                <textarea name="message" id="resMessage" placeholder="Message (optional)" autocomplete="off"
-                  class="input-field"></textarea>
-
-                <button type="submit" class="btn btn-secondary" id="submitBtn">
-                  <span class="text text-1">Book A Table</span>
-                  <span class="text text-2" aria-hidden="true">Book A Table</span>
-                </button>
-              </div>
-
-            </form>
-
-            <div class="form-right text-center" style="background-image: url('./assets/images/form-pattern.png')">
-
-              <h2 class="headline-1 text-center">Contact Us</h2>
-
-              <p class="contact-label">Booking Request</p>
-
-              <a href="0926 776 8263" class="body-1 contact-number hover-underline">0926 776 8263</a>
-
-              <div class="separator"></div>
-
-              <p class="contact-label">Location</p>
-
-              <address class="body-4">
-                Kalayaan, Calabarzon, Philippines, Kalayaan, Philippines <br>
-              </address>
-              </address>
-
-              <p class="contact-label">Weekdays</p>
-
-              <p class="body-4">
-                4.30 pm - 8.30pm
-              </p>
-
-              <p class="contact-label">Weekends</p>
-
-              <p class="body-4">
-                6.30 pm - 8.30pm
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-
-
-
-
-      <!-- 
-        - #FEATURES
-      -->
-
-      <section class="section features text-center" aria-label="features">
-        <div class="container">
-
-          <p class="section-subtitle label-2">Why Choose Us</p>
-
-          <h2 class="headline-1 section-title">Our Strength</h2>
-
-          <ul class="grid-list">
-
-            <li class="feature-item">
-              <div class="feature-card">
-
-                <div class="card-icon">
-                  <img src="./assets/images/features-icon-1.png" width="100" height="80" loading="lazy" alt="icon">
-                </div>
-
-                <h3 class="title-2 card-title">Hygienic Food</h3>
-
-
-
-              </div>
-            </li>
-
-            <li class="feature-item">
-              <div class="feature-card">
-
-                <div class="card-icon">
-                  <img src="./assets/images/features-icon-2.png" width="100" height="80" loading="lazy" alt="icon">
-                </div>
-
-                <h3 class="title-2 card-title">Stunning View</h3>
-
-
-
-              </div>
-            </li>
-
-            <li class="feature-item">
-              <div class="feature-card">
-
-                <div class="card-icon">
-                  <img src="./assets/images/features-icon-3.png" width="100" height="80" loading="lazy" alt="icon">
-                </div>
-
-                <h3 class="title-2 card-title">Skilled Chefs</h3>
-
-
-
-              </div>
-            </li>
-
-            <li class="feature-item">
-              <div class="feature-card">
-
-                <div class="card-icon">
-                  <img src="./assets/images/features-icon-4.png" width="100" height="80" loading="lazy" alt="icon">
-                </div>
-
-                <h3 class="title-2 card-title">Event & Party</h3>
-
-
-
-              </div>
-            </li>
-
-          </ul>
-
-          <img src="./assets/images/shape-7.png" width="208" height="178" loading="lazy" alt="shape"
-            class="shape shape-1">
-
-          <img src="./assets/images/shape-8.png" width="120" height="115" loading="lazy" alt="shape"
-            class="shape shape-2">
-
-        </div>
-      </section>
-
-
-
-
-
-      <!-- 
-        - #EVENT
-      -->
-
-      <section class="section event bg-black-10" aria-label="event" id="event">
-        <div class="container">
-
-          <p class="section-subtitle label-2 text-center">Recent Updates</p>
-
-          <h2 href="#event" class="section-title headline-1 text-center">Upcoming Event</h2>
-
-          <ul class="grid-list">
-
-            <li>
-              <div class="event-card has-before hover:shine">
-
-                <div class="card-banner img-holder" style="--width: 350; --height: 450;">
-                  <img src="./assets/images/event-1.jpg" width="350" height="450" loading="lazy"
-                    alt="Flavour so good you’ll try to eat with your eyes." class="img-cover">
-
-                  <time class="publish-date label-2" datetime="2022-09-15">03/31/2026</time>
-                </div>
-
-                <div class="card-content">
-                  <p class="card-subtitle label-2 text-center">He is risen!</p>
-
-                  <h3 class="card-title title-2 text-center">
-                    Celebrate with us at Easter. Pick one of these Easter eggs with an egg-cellent prize inside.
-                  </h3>
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="event-card has-before hover:shine">
-
-                <div class="card-banner img-holder" style="--width: 350; --height: 450;">
-                  <img src="./assets/images/event-2.jpg" width="350" height="450" loading="lazy"
-                    alt="Flavour so good you’ll try to eat with your eyes." class="img-cover">
-
-                  <time class="publish-date label-2" datetime="2022-09-08">03/06/2026</time>
-                </div>
-
-                <div class="card-content">
-                  <p class="card-subtitle label-2 text-center">Celebrate with Us!</p>
-
-                  <h3 class="card-title title-2 text-center">
-                    As we celebrate our 3rd anniversary, we want to express our sincere gratitude for your unwavering
-                    support throughout the years.
-                  </h3>
-                </div>
-
-              </div>
-            </li>
-
-            <li>
-              <div class="event-card has-before hover:shine">
-
-                <div class="card-banner img-holder" style="--width: 350; --height: 450;">
-                  <img src="./assets/images/event-3.jpg" width="350" height="450" loading="lazy"
-                    alt="Flavour so good you’ll try to eat with your eyes." class="img-cover">
-
-                  <time class="publish-date label-2" datetime="2022-09-03">02/14/2026</time>
-                </div>
-
-                <div class="card-content">
-                  <p class="card-subtitle label-2 text-center">Happy <3 Day</p>
-
-                      <h3 class="card-title title-2 text-center">
-                        Grab this chance! Treat your partner with our best seller rice meal
-                      </h3>
-                </div>
-
-              </div>
-            </li>
-
-          </ul>
-
-
-
-        </div>
-      </section>
-
-    </article>
-  </main>
-
-
-
-
-
-  <!-- 
-    - #FOOTER
-  -->
-
-  <footer class="footer section has-bg-image text-center"
-    style="background-image: url('./assets/images/footer-bg.jpg')">
-    <div class="container">
-
-      <div class="footer-top grid-list">
-
-        <div class="footer-brand has-before has-after">
-
-          <a href="#" class="logo">
-            <img src="./assets/images/Joy_s View.png" width="160" height="50" loading="lazy" alt="Joy's View home">
-          </a>
-
-          <address class="body-4">
-            Kalayaan, Calabarzon, Philippines, Kalayaan, Philippines
-          </address>
-
-          <a href="Joymieabua@yahoo.com" class="body-4 contact-link">Joymieabua@yahoo.com</a>
-
-          <a href="tel:+88123123456" class="body-4 contact-link">Booking Request : 0926 776 8263</a>
-
-          <p class="body-4">
-            Open : Monday - Sunday
-          </p>
-
-          <div class="wrapper">
-            <div class="separator"></div>
-            <div class="separator"></div>
-            <div class="separator"></div>
-          </div>
-
-
-
-
-        </div>
-
-        <ul class="footer-list">
-
-          <li>
-            <a href="#" class="label-2 footer-link hover-underline">Home</a>
-          </li>
-
-          <li>
-            <a href="#" class="label-2 footer-link hover-underline">Menus</a>
-          </li>
-
-          <li>
-            <a href="#" class="label-2 footer-link hover-underline">About Us</a>
-          </li>
-
-
-        </ul>
-
-        <ul class="footer-list">
-
-          <li>
-            <a href="https://www.facebook.com/ILoveJoysView" class="label-2 footer-link hover-underline">Facebook</a>
-          </li>
-
-
-        </ul>
-
+      <a href="#" class="logo">
+        <img src="./assets/images/Joy_s View.svg" width="160" height="50" alt="Joy's View - Home">
+      </a>
+      <ul class="navbar-list">
+        <li class="navbar-item"><a href="#home" class="navbar-link hover-underline active"><div class="separator"></div><span class="span">Home</span></a></li>
+        <li class="navbar-item"><a href="#menu" class="navbar-link hover-underline"><div class="separator"></div><span class="span">Menus</span></a></li>
+        <li class="navbar-item"><a href="reservation.html" class="navbar-link hover-underline"><div class="separator"></div><span class="span">Reservation</span></a></li>
+        <li class="navbar-item"><a href="#event" class="navbar-link hover-underline"><div class="separator"></div><span class="span">Events</span></a></li>
+        <li class="navbar-item"><a href="#about" class="navbar-link hover-underline"><div class="separator"></div><span class="span">About Us</span></a></li>
+      </ul>
+      <div class="text-center">
+        <p class="headline-1 navbar-title">Visit Us</p>
+        <address class="body-4">Kalayaan, Calabarzon, Philippines</address>
+        <p class="body-4 navbar-text">Open: Monday - Sunday</p>
+        <a href="mailto:Joymieabua@yahoo.com" class="body-4 sidebar-link">Joymieabua@yahoo.com</a>
+        <div class="separator"></div>
+        <p class="contact-label">Booking Request</p>
+        <a href="tel:09267768263" class="body-1 contact-number hover-underline">0926 776 8263</a>
       </div>
+    </nav>
 
-      <div class="footer-bottom">
-
-        <p class="copyright">
-          &copy; 2024 Joy's View. All Rights Reserved | Created by <a href="" target="_blank" class="link">Mythic
-            Group</a>
-        </p>
-
+    <!-- Auth + Notification Area -->
+    <div id="authArea" style="display:flex;align-items:center;gap:8px;margin-right:10px;">
+      <!-- Notification Bell (shown when logged in) -->
+      <div class="notif-bell-wrap" id="notifBellWrap">
+        <button class="notif-bell-btn" onclick="toggleNotifDd()">
+          🔔
+          <span class="nbb-count" id="nbbCount">0</span>
+        </button>
+        <div class="notif-dd" id="notifDd">
+          <div class="ndd-header">
+            <span>Notifications</span>
+            <button class="ndd-mark" onclick="markAllRead()">Mark all read</button>
+          </div>
+          <div class="ndd-list" id="nddList">
+            <div class="ndd-empty">No notifications yet</div>
+          </div>
+        </div>
       </div>
-
+      <a href="#" class="login-nav-btn navbar-link" id="loginNavBtn" onclick="openAuthModal(); return false;">Login</a>
     </div>
-  </footer>
 
+    <button class="nav-open-btn" aria-label="open menu" data-nav-toggler>
+      <span class="line line-1"></span>
+      <span class="line line-2"></span>
+      <span class="line line-3"></span>
+    </button>
+    <div class="overlay" data-nav-toggler data-overlay></div>
+  </div>
+</header>
 
-
-
-
-  <!-- 
-    - #BACK TO TOP
-  -->
-
-  <a href="#top" class="back-top-btn active" aria-label="back to top" data-back-top-btn>
-    <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
-  </a>
-
-
-
-
-
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    // =============================================
-    // PASTE YOUR FIREBASE CONFIG HERE
-    // Go to: Firebase Console > Project Settings > Your Apps > SDK setup
-    // =============================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyAI__6j1u2qqZrfg0ckK1TH-OQ1wNPtlwQ",
-      authDomain: "joysview.firebaseapp.com",
-      projectId: "joysview",
-      storageBucket: "joysview.firebasestorage.app",
-      messagingSenderId: "84104072720",
-      appId: "1:84104072720:web:d5b9df043b23253da20495"
-    };
-
-    // ADMIN EMAIL — change to your admin email
-    const ADMIN_EMAIL = "admin@joysview.com";
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    let currentUser = null;
-
-    // ---- Auth state listener ----
-    onAuthStateChanged(auth, (user) => {
-      currentUser = user;
-      const authArea = document.getElementById('authArea');
-      if (user) {
-        const isAdmin = user.email === ADMIN_EMAIL;
-        authArea.innerHTML = `
-          <span class="user-name">👤 ${user.email}</span>
-          ${isAdmin ? '<a href="admin.html" style="background:#c8a96e;color:#000;border-radius:6px;padding:5px 12px;text-decoration:none;font-size:0.82rem;font-weight:700;">Admin Panel</a>' : ''}
-          <button class="logout-btn" onclick="window.doLogout()">Logout</button>
-        `;
-        // Show form, hide login prompt
-        document.getElementById('formFields').style.display = '';
-        document.getElementById('loginPrompt').style.display = 'none';
-        // Pre-fill email
-        if (document.getElementById('resEmail')) {
-          document.getElementById('resEmail').value = user.email;
-        }
-      } else {
-        authArea.innerHTML = '<a href="#" class="login-nav-btn navbar-link" onclick="openAuthModal(); return false;">Login</a>';
-        document.getElementById('formFields').style.display = 'none';
-        document.getElementById('loginPrompt').style.display = 'block';
-      }
-    });
-
-    // ---- Auth modal actions ----
-    window.doLogin = async function () {
-      const email = document.getElementById('authEmail').value;
-      const pass = document.getElementById('authPass').value;
-      const err = document.getElementById('authError');
-      err.textContent = '';
-      try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        closeAuthModal();
-        showToast('Logged in successfully!', 'success');
-      } catch (e) {
-        err.textContent = e.message.replace('Firebase: ', '');
-      }
-    };
-
-    window.doSignup = async function () {
-      const email = document.getElementById('authEmail').value;
-      const pass = document.getElementById('authPass').value;
-      const err = document.getElementById('authError');
-      err.textContent = '';
-      try {
-        await createUserWithEmailAndPassword(auth, email, pass);
-        closeAuthModal();
-        showToast('Account created! You are now logged in.', 'success');
-      } catch (e) {
-        err.textContent = e.message.replace('Firebase: ', '');
-      }
-    };
-
-    window.doLogout = async function () {
-      await signOut(auth);
-      showToast('Logged out.', '');
-    };
-
-    // ---- Reservation submission ----
-    window.submitReservation = async function (e) {
-      e.preventDefault();
-      if (!currentUser) { openAuthModal(); return; }
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.querySelector('.text-1').textContent = 'Sending...';
-      try {
-        await addDoc(collection(db, 'reservations'), {
-          userId: currentUser.uid,
-          userEmail: currentUser.email,
-          name: document.getElementById('resName').value,
-          phone: document.getElementById('resPhone').value,
-          email: document.getElementById('resEmail').value,
-          persons: document.getElementById('resPerson').value,
-          date: document.getElementById('resDate').value,
-          time: document.getElementById('resTime').value,
-          message: document.getElementById('resMessage').value,
-          status: 'pending',
-          createdAt: serverTimestamp()
-        });
-        showToast('✅ Reservation sent! We will confirm shortly.', 'success');
-        document.getElementById('reservationForm').reset();
-        document.getElementById('resEmail').value = currentUser.email;
-      } catch (e) {
-        showToast('Error: ' + e.message, 'error');
-      }
-      btn.disabled = false;
-      btn.querySelector('.text-1').textContent = 'Book A Table';
-    };
-  </script>
-
-  <!-- Auth Modal -->
-  <div class="auth-modal-overlay" id="authModalOverlay">
-    <div class="auth-modal">
-      <button class="auth-close" onclick="closeAuthModal()">✕</button>
-      <h2 id="authModalTitle">Welcome Back</h2>
-      <p id="authModalSubtitle">Log in to make a reservation</p>
-      <div class="auth-error" id="authError"></div>
-      <input type="email" id="authEmail" placeholder="Email address" />
-      <input type="password" id="authPass" placeholder="Password" />
-      <button class="auth-btn" id="authMainBtn" onclick="doLogin()">Log In</button>
-      <span class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">Don't have an account? Sign Up</span>
+<!-- AUTH MODAL -->
+<div class="auth-modal-overlay" id="authModalOverlay">
+  <div class="auth-modal">
+    <button class="auth-close" onclick="closeAuthModal()">✕</button>
+    <h2>Joy's View</h2>
+    <p class="auth-sub">Sign in or create an account to manage your reservations.</p>
+    <div class="auth-tab-switch">
+      <button class="auth-tab active" id="atLogin" onclick="switchAuthTab('login')">Login</button>
+      <button class="auth-tab" id="atSignup" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+    <!-- Login -->
+    <div class="auth-form-panel active" id="afpLogin">
+      <input type="email" id="loginEmail" placeholder="Email Address">
+      <input type="password" id="loginPw" placeholder="Password">
+      <div class="auth-error" id="loginErr"></div>
+      <button class="auth-btn" id="loginBtn" onclick="doLogin()">Login</button>
+      <button class="auth-toggle" onclick="switchAuthTab('signup')">Don't have an account? Sign Up</button>
+    </div>
+    <!-- Signup -->
+    <div class="auth-form-panel" id="afpSignup">
+      <input type="text" id="signupName" placeholder="Full Name">
+      <input type="email" id="signupEmail" placeholder="Email Address">
+      <input type="password" id="signupPw" placeholder="Password (min. 8 characters)">
+      <input type="password" id="signupConfirmPw" placeholder="Confirm Password">
+      <div class="auth-error" id="signupErr"></div>
+      <button class="auth-btn" id="signupBtn" onclick="doSignup()">Create Account</button>
+      <button class="auth-toggle" onclick="switchAuthTab('login')">Already have an account? Login</button>
     </div>
   </div>
+</div>
 
-  <!-- Toast -->
-  <div class="toast" id="toast"></div>
+<main>
+  <article>
 
-  <script>
-    let isLoginMode = true;
+    <!-- #HERO -->
+    <section class="hero text-center" aria-label="home" id="home">
+      <ul class="hero-slider" data-hero-slider>
+        <li class="slider-item active" data-hero-slider-item>
+          <div class="slider-bg"><img src="./assets/images/hero-slider-1.jpg" width="1880" height="950" alt="" class="img-cover"></div>
+          <p class="label-2 section-subtitle slider-reveal">Traditional &amp; Hygiene</p>
+          <h1 class="display-1 hero-title slider-reveal">For the love of delicious food<br>and stunning views</h1>
+          <p class="body-2 hero-text slider-reveal">Come with family &amp; feel the Joy of food</p>
+        </li>
+        <li class="slider-item" data-hero-slider-item>
+          <div class="slider-bg"><img src="./assets/images/hero-slider-2.jpg" width="1880" height="950" alt="" class="img-cover"></div>
+          <p class="label-2 section-subtitle slider-reveal">delightful experience</p>
+          <h1 class="display-1 hero-title slider-reveal">Experience good food <br>with a splendid view</h1>
+          <p class="body-2 hero-text slider-reveal">Come with family &amp; feel the Joy of food</p>
+        </li>
+        <li class="slider-item" data-hero-slider-item>
+          <div class="slider-bg"><img src="./assets/images/hero-slider-3.jpg" width="1880" height="950" alt="" class="img-cover"></div>
+          <p class="label-2 section-subtitle slider-reveal">amazing &amp; delicious</p>
+          <h1 class="display-1 hero-title slider-reveal">Where every flavor <br>tells a story</h1>
+          <p class="body-2 hero-text slider-reveal">Come with family &amp; feel the Joy of food</p>
+        </li>
+      </ul>
+      <button class="slider-btn prev" aria-label="slide to previous" data-prev-btn><ion-icon name="chevron-back"></ion-icon></button>
+      <button class="slider-btn next" aria-label="slide to next" data-next-btn><ion-icon name="chevron-forward"></ion-icon></button>
+    </section>
 
-    function openAuthModal() {
-      document.getElementById('authModalOverlay').classList.add('active');
-      document.getElementById('authError').textContent = '';
+    <!-- #SERVICE -->
+    <section class="section service bg-black-10 text-center" aria-label="service">
+      <div class="container">
+        <p class="section-subtitle label-2"></p>
+        <h2 class="headline-1 section-title">We Offer Top Notch</h2>
+        <p class="section-text">Joy's View wants you to experience good food with a splendid view of Laguna de Bay and the Sierra Madre</p>
+        <ul class="grid-list">
+          <li><div class="service-card"><a href="#" class="has-before hover:shine"><figure class="card-banner img-holder" style="--width:285;--height:336;"><img src="./assets/images/service-1.jpg" width="285" height="336" loading="lazy" alt="Rice Meal" class="img-cover"></figure></a><div class="card-content"><h3 class="title-4 card-title"><a href="#">Rice Meal</a></h3><a href="#menu" class="btn-text hover-underline label-2">View Menu</a></div></div></li>
+          <li><div class="service-card"><a href="#" class="has-before hover:shine"><figure class="card-banner img-holder" style="--width:285;--height:336;"><img src="./assets/images/service-2.jpg" width="285" height="336" loading="lazy" alt="Appetizers" class="img-cover"></figure></a><div class="card-content"><h3 class="title-4 card-title"><a href="#">Appetizers</a></h3><a href="#menu" class="btn-text hover-underline label-2">View Menu</a></div></div></li>
+          <li><div class="service-card"><a href="#" class="has-before hover:shine"><figure class="card-banner img-holder" style="--width:285;--height:336;"><img src="./assets/images/service-3.jpg" width="285" height="336" loading="lazy" alt="Drinks" class="img-cover"></figure></a><div class="card-content"><h3 class="title-4 card-title"><a href="#">Drinks</a></h3><a href="#menu" class="btn-text hover-underline label-2">View Menu</a></div></div></li>
+        </ul>
+        <img src="./assets/images/shape-1.png" width="246" height="412" loading="lazy" alt="shape" class="shape shape-1 move-anim">
+        <img src="./assets/images/shape-2.png" width="343" height="345" loading="lazy" alt="shape" class="shape shape-2 move-anim">
+      </div>
+    </section>
+
+    <!-- #ABOUT -->
+    <section class="section about text-center" aria-labelledby="about-label" id="about">
+      <div class="container">
+        <div class="about-content">
+          <p class="label-2 section-subtitle" id="about-label">Our Story</p>
+          <h2 class="headline-1 section-title">Every Flavor Tells a Story</h2>
+          <p class="section-text">At Joy's View, we want to share delicious food and stunning scenery with you. Located by Laguna de Bay and the Sierra Madre, our restaurant is a special place for food lovers and nature fans. We make tasty dishes using local ingredients and flavors from around the world.</p>
+          <div class="contact-label">Book Through Call</div>
+          <a href="tel:09267768263" class="body-1 contact-number hover-underline">0926 776 8263</a>
+        </div>
+        <figure class="about-banner">
+          <img src="./assets/images/about-banner.jpg" width="570" height="570" loading="lazy" alt="about banner" class="w-100" data-parallax-item data-parallax-speed="1">
+          <div class="abs-img abs-img-1 has-before" data-parallax-item data-parallax-speed="1.75"><img src="./assets/images/about-abs-image.jpg" width="285" height="285" loading="lazy" alt="" class="w-100"></div>
+          <div class="abs-img abs-img-2 has-before"><img src="./assets/images/badge-2.png" width="133" height="134" loading="lazy" alt=""></div>
+        </figure>
+        <img src="./assets/images/shape-3.png" width="197" height="194" loading="lazy" alt="" class="shape">
+      </div>
+    </section>
+
+    <!-- #SPECIAL DISH -->
+    <section class="special-dish text-center" aria-labelledby="dish-label">
+      <div class="special-dish-banner"><img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy" alt="special dish" class="img-cover"></div>
+      <div class="special-dish-content bg-black-10">
+        <div class="container">
+          <img src="./assets/images/badge-1.png" width="28" height="41" loading="lazy" alt="badge" class="abs-img">
+          <p class="section-subtitle label-2">Special Dish</p>
+          <h2 class="headline-1 section-title">Quesadillas</h2>
+          <p class="section-text">A quesadilla is a simple yet satisfying dish consisting of a tortilla filled with melted cheese and often other ingredients like seasoned meats, vegetables, or beans.</p>
+          <div class="wrapper"><span class="span body-1">₱135.00 - ₱200.00</span></div>
+        </div>
+      </div>
+      <img src="./assets/images/shape-4.png" width="179" height="359" loading="lazy" alt="" class="shape shape-1">
+      <img src="./assets/images/shape-9.png" width="351" height="462" loading="lazy" alt="" class="shape shape-2">
+    </section>
+
+    <!-- #MENU -->
+    <section class="section menu" aria-label="menu-label" id="menu">
+      <div class="container">
+        <p class="section-subtitle text-center label-2">Joy's View Menu</p>
+        <h2 class="headline-1 section-title text-center">Menu</h2>
+        <ul class="grid-list">
+          <li><div class="menu-card hover:card"><figure class="card-banner img-holder" style="--width:100;--height:100;"><img src="./assets/images/menu-1.png" width="100" height="100" loading="lazy" alt="Chicken Rice Bowl" class="img-cover"></figure><div><div class="title-wrapper"><h3 class="title-3"><a href="#" class="card-title">Chicken Rice Bowl</a></h3><span class="badge label-1">Top Sale</span><span class="span title-2">₱75.00</span></div><p class="card-text label-1">Flavorful and satisfying dish featuring tender pieces of chicken served over a bed of fluffy rice and corn in the side dish.</p></div></div></li>
+          <li><div class="menu-card hover:card"><figure class="card-banner img-holder" style="--width:100;--height:100;"><img src="./assets/images/menu-2.png" width="100" height="100" loading="lazy" alt="Lasagna" class="img-cover"></figure><div><div class="title-wrapper"><h3 class="title-3"><a href="#" class="card-title">Lasagna</a></h3><span class="span title-2">₱95.00</span></div><p class="card-text label-1">Layers of flat pasta sheets, rich tomato sauce, creamy béchamel sauce, and flavorful fillings such as ground meat, vegetables, and cheese partnered with french toast bread.</p></div></div></li>
+          <li><div class="menu-card hover:card"><figure class="card-banner img-holder" style="--width:100;--height:100;"><img src="./assets/images/menu-3.png" width="100" height="100" loading="lazy" alt="Carbonara" class="img-cover"></figure><div><div class="title-wrapper"><h3 class="title-3"><a href="#" class="card-title">Carbonara</a></h3><span class="span title-2">₱85.00</span></div><p class="card-text label-1">Italian pasta dish known for its rich and creamy sauce also served with french toast bread.</p></div></div></li>
+          <li><div class="menu-card hover:card"><figure class="card-banner img-holder" style="--width:100;--height:100;"><img src="./assets/images/menu-4.png" width="100" height="100" loading="lazy" alt="Shrimp Alfredo" class="img-cover"></figure><div><div class="title-wrapper"><h3 class="title-3"><a href="#" class="card-title">Shrimp Alfredo</a></h3><span class="span title-2">₱85.00</span></div><p class="card-text label-1">Italian pasta dish that combines succulent shrimp with a creamy Alfredo sauce served with french toast bread.</p></div></div></li>
+          <li><div class="menu-card hover:card"><figure class="card-banner img-holder" style="--width:100;--height:100;"><img src="./assets/images/menu-5.png" width="100" height="100" loading="lazy" alt="Nachos" class="img-cover"></figure><div><div class="title-wrapper"><h3 class="title-3"><a href="#" class="card-title">Nachos</a></h3><span class="span title-2">₱85.00</span></div><p class="card-text label-1">Mexican-inspired snack or appetizer consisting of tortilla chips topped with melted cheese and a variety of flavorful toppings.</p></div></div></li>
+          <li><div class="menu-card hover:card"><figure class="card-banner img-holder" style="--width:100;--height:100;"><img src="./assets/images/menu-6.png" width="100" height="100" loading="lazy" alt="Affogato" class="img-cover"></figure><div><div class="title-wrapper"><h3 class="title-3"><a href="#" class="card-title">Affogato</a></h3><span class="span title-2">₱85.00</span></div><p class="card-text label-1">Italian dessert that combines two simple ingredients: vanilla gelato or ice cream, and hot espresso.</p></div></div></li>
+        </ul>
+        <p class="menu-text text-center">
+          Weekdays daily from <span class="span">4:30 pm</span> to <span class="span">8:30 pm</span> <br>
+          Weekends daily from <span class="span">6:30 pm</span> to <span class="span">8:30 pm</span>
+        </p>
+        <img src="./assets/images/shape-5.png" width="921" height="1036" loading="lazy" alt="shape" class="shape shape-2 move-anim">
+        <img src="./assets/images/shape-6.png" width="343" height="345" loading="lazy" alt="shape" class="shape shape-3 move-anim">
+      </div>
+    </section>
+
+    <!-- #TESTIMONIALS -->
+    <section class="section testi text-center has-bg-image" style="background-image:url('./assets/images/testimonial-bg.jpg')" aria-label="testimonials">
+      <div class="container">
+        <div class="quote">"</div>
+        <p class="headline-2 testi-text">Recommended for tastier and Good food, perfect for barkada bonding place, scenic view, affordable price. We will surely come back again...</p>
+        <div class="wrapper"><div class="separator"></div><div class="separator"></div><div class="separator"></div></div>
+        <div class="profile">
+          <img src="./assets/images/testi-avatar.jpg" width="100" height="100" loading="lazy" alt="Crezhelda Bulig Cunanan" class="img">
+          <p class="label-2 profile-name">Crezhelda Bulig Cunanan</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- #RESERVATION -->
+    <section class="reservation" id="olreserve">
+      <div class="container">
+        <div class="form reservation-form bg-black-10">
+          <form action="" class="form-left" id="reservationForm" onsubmit="submitReservation(event)">
+            <h2 class="headline-1 text-center">Online Reservation</h2>
+            <p class="form-text text-center">
+              Booking request <a href="tel:09267768263" class="link">0926 776 8263</a> or fill out the form
+            </p>
+
+            <div id="loginPromptRes" style="display:none;background:#2a2a2a;border:1px solid #c8a96e;border-radius:8px;padding:16px;margin-bottom:16px;text-align:center;">
+              <p style="color:#fff;margin-bottom:10px;font-family:'DM Sans',sans-serif;">Please log in to make a reservation.</p>
+              <button type="button" onclick="openAuthModal()" class="btn btn-secondary" style="font-size:0.9rem;"><span class="text text-1">Log In / Sign Up</span><span class="text text-2" aria-hidden="true">Log In / Sign Up</span></button>
+            </div>
+
+            <div id="resFormFields">
+              <div class="input-wrapper">
+                <input type="text" name="name" id="resName" placeholder="Your Name" autocomplete="off" class="input-field" required>
+                <input type="tel" name="phone" id="resPhone" placeholder="Phone Number" autocomplete="off" class="input-field" required>
+                <input type="email" name="email" id="resEmail" placeholder="Your Email" autocomplete="off" class="input-field" required>
+              </div>
+              <div class="input-wrapper">
+                <div class="icon-wrapper">
+                  <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+                  <select name="person" id="resPerson" class="input-field">
+                    <option>1 Person</option><option>2 Persons</option><option>3 Persons</option>
+                    <option>4 Persons</option><option>5 Persons</option><option>6 Persons</option>
+                    <option>7+ Persons</option>
+                  </select>
+                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                </div>
+                <div class="icon-wrapper">
+                  <ion-icon name="calendar-clear-outline" aria-hidden="true"></ion-icon>
+                  <input type="date" name="reservation-date" id="resDate" class="input-field" required onchange="checkDateAvailInline()">
+                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                </div>
+                <div class="icon-wrapper">
+                  <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
+                  <select name="time" id="resTime" class="input-field">
+                    <option>04:30 PM</option><option>05:00 PM</option><option>05:30 PM</option>
+                    <option>06:00 PM</option><option>06:30 PM</option><option>07:00 PM</option>
+                    <option>07:30 PM</option><option>08:00 PM</option>
+                  </select>
+                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                </div>
+              </div>
+              <div id="dateAvailMsg" style="font-size:0.82rem;margin-bottom:8px;min-height:18px;"></div>
+              <textarea name="message" id="resMessage" placeholder="Message (optional)" autocomplete="off" class="input-field"></textarea>
+              <div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap;">
+                <button type="submit" class="btn btn-secondary" style="flex:1;">
+                  <span class="text text-1">Book a Table</span>
+                  <span class="text text-2" aria-hidden="true">Book a Table</span>
+                </button>
+                <a href="reservation.html" class="btn" style="flex:0;white-space:nowrap;font-size:0.82rem;">Full Page →</a>
+              </div>
+            </div>
+          </form>
+
+          <div class="reservation-img">
+            <img src="./assets/images/reservation.png" width="715" height="680" loading="lazy" alt="Reservation" class="img-cover">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- #FEATURES -->
+    <section class="section features" aria-label="features">
+      <div class="container">
+        <ul class="grid-list">
+          <li>
+            <div class="feature-card">
+              <div class="card-icon"><img src="./assets/images/icon-1.png" width="100" height="80" loading="lazy" alt="icon"></div>
+              <h3 class="title-2 card-title">Scenic View</h3>
+              <p class="label-1 card-text">Overlooking the breathtaking Laguna de Bay</p>
+            </div>
+          </li>
+          <li>
+            <div class="feature-card">
+              <div class="card-icon"><img src="./assets/images/icon-2.png" width="100" height="80" loading="lazy" alt="icon"></div>
+              <h3 class="title-2 card-title">Fresh Ingredients</h3>
+              <p class="label-1 card-text">We source only the freshest local ingredients</p>
+            </div>
+          </li>
+          <li>
+            <div class="feature-card">
+              <div class="card-icon"><img src="./assets/images/icon-3.png" width="100" height="80" loading="lazy" alt="icon"></div>
+              <h3 class="title-2 card-title">Expert Chefs</h3>
+              <p class="label-1 card-text">Prepared by passionate culinary professionals</p>
+            </div>
+          </li>
+          <li>
+            <div class="feature-card">
+              <div class="card-icon"><img src="./assets/images/icon-4.png" width="100" height="80" loading="lazy" alt="icon"></div>
+              <h3 class="title-2 card-title">Affordable Prices</h3>
+              <p class="label-1 card-text">Great quality food at wallet-friendly prices</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+  </article>
+</main>
+
+<!-- #FOOTER -->
+<footer class="footer section has-bg-image text-center" style="background-image:url('./assets/images/footer-bg.jpg')">
+  <div class="container">
+    <div class="footer-top grid-list">
+      <div class="footer-brand">
+        <a href="#" class="logo"><img src="./assets/images/Joy_s View.svg" width="160" height="50" loading="lazy" alt="Joy's View"></a>
+        <p class="body-4 footer-text">Experience good food with a splendid view of Laguna de Bay and the Sierra Madre.</p>
+      </div>
+      <ul class="footer-list">
+        <li><p class="label-2 footer-list-title">Our Links</p></li>
+        <li><a href="#home" class="navbar-link hover-underline">Home</a></li>
+        <li><a href="#menu" class="navbar-link hover-underline">Menus</a></li>
+        <li><a href="reservation.html" class="navbar-link hover-underline">Reservations</a></li>
+        <li><a href="#about" class="navbar-link hover-underline">About Us</a></li>
+      </ul>
+      <ul class="footer-list">
+        <li><p class="label-2 footer-list-title">Contact Us</p></li>
+        <li><address class="footer-text">Kalayaan, Calabarzon, Philippines</address></li>
+        <li><a href="mailto:Joymieabua@yahoo.com" class="body-4 footer-link hover-underline">Joymieabua@yahoo.com</a></li>
+        <li><a href="tel:09267768263" class="body-4 footer-link hover-underline">0926 776 8263</a></li>
+        <li><p class="body-4 footer-text">Open: Mon-Fri 4:30PM–8:30PM</p></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <p class="copyright">&copy; 2025 <a href="#" class="link">Joy's View</a>. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="./assets/js/script.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAI__6j1u2qqZrfg0ckK1TH-OQ1wNPtlwQ",
+  authDomain: "joysview.firebaseapp.com",
+  projectId: "joysview",
+  storageBucket: "joysview.firebasestorage.app",
+  messagingSenderId: "84104072720",
+  appId: "1:84104072720:web:d5b9df043b23253da20495"
+};
+const ADMIN_EMAIL = "admin@joysview.com";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let bookedDates = new Set();
+let notifications = [];
+
+// ── TOAST ──
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 4000);
+}
+
+// ── NOTIFICATIONS ──
+function loadNotifications(uid) {
+  const s = localStorage.getItem('jv_notifs_' + uid);
+  notifications = s ? JSON.parse(s) : [];
+  renderNotifications();
+}
+function saveNotifications(uid) {
+  localStorage.setItem('jv_notifs_' + uid, JSON.stringify(notifications));
+}
+function addNotification(icon, title) {
+  const time = new Date().toLocaleString('en-PH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  notifications.unshift({icon,title,time,read:false,id:Date.now()});
+  if (currentUser) saveNotifications(currentUser.uid);
+  renderNotifications();
+}
+function renderNotifications() {
+  const list = document.getElementById('nddList');
+  const badge = document.getElementById('nbbCount');
+  if (!list) return;
+  const unread = notifications.filter(n=>!n.read).length;
+  badge.textContent = unread;
+  badge.classList.toggle('has', unread > 0);
+  if (notifications.length === 0) {
+    list.innerHTML='<div class="ndd-empty">No notifications yet</div>'; return;
+  }
+  list.innerHTML = notifications.map(n=>`
+    <div class="ndd-item ${n.read?'':'unread'}" onclick="markRead(${n.id})">
+      <span class="ni">${n.icon}</span>
+      <div class="ndd-body">
+        <div class="ndd-title">${n.title}</div>
+        <div class="ndd-time">${n.time}</div>
+      </div>
+      ${!n.read?'<span class="ndd-dot"></span>':''}
+    </div>`).join('');
+}
+window.markRead = (id) => {
+  notifications = notifications.map(n=>n.id===id?{...n,read:true}:n);
+  if (currentUser) saveNotifications(currentUser.uid);
+  renderNotifications();
+};
+window.markAllRead = () => {
+  notifications = notifications.map(n=>({...n,read:true}));
+  if (currentUser) saveNotifications(currentUser.uid);
+  renderNotifications();
+};
+window.toggleNotifDd = () => {
+  document.getElementById('notifDd').classList.toggle('open');
+};
+document.addEventListener('click',(e)=>{
+  const wrap = document.getElementById('notifBellWrap');
+  if (wrap && !wrap.contains(e.target)) document.getElementById('notifDd')?.classList.remove('open');
+});
+
+// ── AUTH MODAL ──
+window.openAuthModal = () => document.getElementById('authModalOverlay').classList.add('active');
+window.closeAuthModal = () => {
+  document.getElementById('authModalOverlay').classList.remove('active');
+  clearAuthErrors();
+};
+window.switchAuthTab = (tab) => {
+  document.getElementById('atLogin').classList.toggle('active', tab==='login');
+  document.getElementById('atSignup').classList.toggle('active', tab==='signup');
+  document.getElementById('afpLogin').classList.toggle('active', tab==='login');
+  document.getElementById('afpSignup').classList.toggle('active', tab==='signup');
+  clearAuthErrors();
+};
+function clearAuthErrors() {
+  document.getElementById('loginErr').textContent='';
+  document.getElementById('signupErr').textContent='';
+}
+document.getElementById('authModalOverlay').addEventListener('click',(e)=>{
+  if (e.target===e.currentTarget) closeAuthModal();
+});
+document.addEventListener('keydown',(e)=>{
+  if (e.key==='Escape') closeAuthModal();
+});
+
+// ── LOGIN ──
+window.doLogin = async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw = document.getElementById('loginPw').value;
+  const errEl = document.getElementById('loginErr');
+  const btn = document.getElementById('loginBtn');
+  errEl.textContent='';
+  if (!email||!pw){errEl.textContent='Please fill in all fields.';return;}
+  btn.disabled=true; btn.textContent='Logging in…';
+  try {
+    await signInWithEmailAndPassword(auth,email,pw);
+    closeAuthModal();
+    showToast('Welcome back!','success');
+  } catch(e) {
+    errEl.textContent = e.code==='auth/invalid-credential'?'Invalid email or password.':e.message;
+    btn.disabled=false; btn.textContent='Login';
+  }
+};
+
+// ── SIGNUP ──
+window.doSignup = async () => {
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pw = document.getElementById('signupPw').value;
+  const cpw = document.getElementById('signupConfirmPw').value;
+  const errEl = document.getElementById('signupErr');
+  const btn = document.getElementById('signupBtn');
+  errEl.textContent='';
+  if (!name||!email||!pw||!cpw){errEl.textContent='Please fill in all fields.';return;}
+  if (pw!==cpw){errEl.textContent='Passwords do not match.';return;}
+  if (pw.length<8){errEl.textContent='Password must be at least 8 characters.';return;}
+  if (email===ADMIN_EMAIL){errEl.textContent='This email is reserved.';return;}
+  btn.disabled=true; btn.textContent='Creating account…';
+  try {
+    const cred = await createUserWithEmailAndPassword(auth,email,pw);
+    await updateProfile(cred.user,{displayName:name});
+    closeAuthModal();
+    showToast('Account created! Welcome to Joy\'s View.','success');
+  } catch(e) {
+    errEl.textContent=e.code==='auth/email-already-in-use'?'Email already registered.':e.message;
+    btn.disabled=false; btn.textContent='Create Account';
+  }
+};
+
+// ── AUTH STATE ──
+onAuthStateChanged(auth,(user)=>{
+  currentUser = user;
+  const authArea = document.getElementById('authArea');
+  const bellWrap = document.getElementById('notifBellWrap');
+  const loginBtn = document.getElementById('loginNavBtn');
+  const loginPrompt = document.getElementById('loginPromptRes');
+  const resFields = document.getElementById('resFormFields');
+
+  if (user && user.email===ADMIN_EMAIL) {
+    window.location.href='admin.html'; return;
+  }
+  if (user) {
+    const displayName = user.displayName || user.email.split('@')[0];
+    loginBtn.style.display='none';
+    bellWrap.style.display='flex';
+    // Show user pill
+    let pill = document.getElementById('userPill');
+    if (!pill) {
+      pill = document.createElement('div');
+      pill.id='userPill';
+      pill.className='user-bar';
+      pill.innerHTML=`<span class="user-name">👤 ${displayName}</span><button class="logout-btn" onclick="doLogout()">Logout</button>`;
+      authArea.appendChild(pill);
     }
-    function closeAuthModal() {
-      document.getElementById('authModalOverlay').classList.remove('active');
+    if (loginPrompt) loginPrompt.style.display='none';
+    if (resFields) {
+      document.getElementById('resName').value=user.displayName||'';
+      document.getElementById('resEmail').value=user.email||'';
     }
-    function toggleAuthMode() {
-      isLoginMode = !isLoginMode;
-      document.getElementById('authModalTitle').textContent = isLoginMode ? 'Welcome Back' : 'Create Account';
-      document.getElementById('authModalSubtitle').textContent = isLoginMode ? 'Log in to make a reservation' : 'Sign up to book a table';
-      document.getElementById('authMainBtn').textContent = isLoginMode ? 'Log In' : 'Sign Up';
-      document.getElementById('authMainBtn').onclick = isLoginMode ? doLogin : doSignup;
-      document.getElementById('authToggle').textContent = isLoginMode ? "Don't have an account? Sign Up" : 'Already have an account? Log In';
-      document.getElementById('authError').textContent = '';
-    }
-    // Close modal on overlay click
-    document.getElementById('authModalOverlay').addEventListener('click', function (e) {
-      if (e.target === this) closeAuthModal();
+    loadNotifications(user.uid);
+    loadBookedDates();
+  } else {
+    loginBtn.style.display='';
+    bellWrap.style.display='none';
+    const pill = document.getElementById('userPill');
+    if (pill) pill.remove();
+    if (loginPrompt) loginPrompt.style.display='block';
+    loadBookedDates();
+  }
+});
+
+window.doLogout = async () => {
+  await signOut(auth);
+  showToast('Logged out.','');
+  notifications=[];
+  renderNotifications();
+};
+
+// ── DATE AVAILABILITY ──
+async function loadBookedDates() {
+  try {
+    const q = query(collection(db,'reservations'),where('status','==','confirmed'));
+    const snap = await getDocs(q);
+    bookedDates = new Set(snap.docs.map(d=>d.data().date).filter(Boolean));
+  } catch(e){ console.error(e); }
+}
+window.checkDateAvailInline = () => {
+  const date = document.getElementById('resDate').value;
+  const msg = document.getElementById('dateAvailMsg');
+  if (!date){msg.textContent='';return;}
+  if (bookedDates.has(date)) {
+    msg.style.color='#f44336';
+    msg.textContent='✗ This date is fully booked. Please choose another date.';
+  } else {
+    msg.style.color='#4caf50';
+    msg.textContent='✓ Available!';
+  }
+};
+
+// Set min date
+const rd = document.getElementById('resDate');
+if (rd) {
+  const t = new Date(); t.setDate(t.getDate()+1);
+  rd.min = t.toISOString().split('T')[0];
+}
+
+// ── INLINE RESERVATION SUBMIT ──
+window.submitReservation = async (e) => {
+  e.preventDefault();
+  if (!currentUser){ openAuthModal(); return; }
+  const name=document.getElementById('resName').value.trim();
+  const phone=document.getElementById('resPhone').value.trim();
+  const email=document.getElementById('resEmail').value.trim();
+  const date=document.getElementById('resDate').value;
+  const time=document.getElementById('resTime').value;
+  const persons=document.getElementById('resPerson').value;
+  const message=document.getElementById('resMessage').value.trim();
+  if (!name||!phone||!email||!date){showToast('Please fill in all required fields.','error');return;}
+  if (bookedDates.has(date)){showToast('This date is fully booked. Please choose another.','error');return;}
+  try {
+    await addDoc(collection(db,'reservations'),{
+      userId:currentUser.uid, userEmail:currentUser.email,
+      name,phone,email,date,time,persons,message,
+      status:'pending', createdAt:serverTimestamp()
     });
-
-    function showToast(msg, type) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast ' + type;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 4000);
-    }
-  </script>
-
-  <!-- custom js link -->
-  <script src="./assets/js/script.js"></script>
-
-  <!-- ionicon link -->
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
+    addNotification('📅',`Reservation requested for ${date} at ${time}`);
+    showToast('Reservation submitted! We\'ll confirm via email.','success');
+    document.getElementById('reservationForm').reset();
+    document.getElementById('resName').value=currentUser.displayName||'';
+    document.getElementById('resEmail').value=currentUser.email||'';
+  } catch(err){
+    showToast('Failed: '+err.message,'error');
+  }
+};
+</script>
 </body>
-
 </html>
