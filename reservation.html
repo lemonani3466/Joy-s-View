@@ -70,18 +70,25 @@ html,body{min-height:100%; font-family:'DM Sans',sans-serif; background:var(--da
   align-items: center;
 }
 .notif-bell {
-  background: none;
-  border: none;
-  color: var(--gold);
-  font-size: 1.2rem;
+  background: linear-gradient(135deg, rgba(200,169,110,0.2), rgba(20,20,20,0.96));
+  border: 1px solid rgba(200,169,110,0.34);
+  color: var(--gold-light);
+  font-size: 1.38rem;
   cursor: pointer;
   position: relative;
-  padding: 4px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.24);
+  transition: transform 0.2s, background 0.2s, border-color 0.2s;
+}
+.notif-bell:hover {
+  background: linear-gradient(135deg, rgba(224,188,126,0.3), rgba(28,28,28,0.98));
+  transform: translateY(-1px);
 }
 .notif-dot {
   position: absolute;
-  top: 2px; right: 2px;
-  width: 8px; height: 8px;
+  top: 8px; right: 10px;
+  width: 10px; height: 10px;
   background: var(--red);
   border-radius: 50%;
   display: none;
@@ -158,19 +165,27 @@ html,body{min-height:100%; font-family:'DM Sans',sans-serif; background:var(--da
 
 /* User info pill */
 .user-pill {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--dark4);
-  border: 1px solid var(--border);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.82rem;
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(135deg, rgba(200,169,110,0.14), rgba(18,18,18,0.96));
+  border: 1px solid rgba(200,169,110,0.28);
+  padding: 9px 10px 9px 16px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.28);
 }
-.user-pill .up-name { color: var(--gold); font-weight: 600; }
+.user-pill .up-name { color: var(--gold-light); font-weight: 700; letter-spacing: 0.02em; }
 .user-pill .up-logout {
-  background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.78rem;
-  transition:color 0.2s;
+  background: rgba(200,169,110,0.14);
+  border: 1px solid rgba(200,169,110,0.42);
+  color: var(--text);
+  cursor:pointer;
+  font-size:0.88rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 999px;
+  transition: all 0.2s;
 }
-.user-pill .up-logout:hover { color:var(--red); }
+.user-pill .up-logout:hover { background: var(--gold); color:#000; transform: translateY(-1px); }
 
 /* Page hero */
 .page-hero {
@@ -352,6 +367,9 @@ html,body{min-height:100%; font-family:'DM Sans',sans-serif; background:var(--da
   .page-hero { padding:40px 20px; }
   .site-header { padding:14px 20px; }
   .field-row { grid-template-columns:1fr; }
+  .user-pill { gap:10px; padding:8px 8px 8px 12px; font-size:0.88rem; }
+  .user-pill .up-logout { padding:7px 12px; font-size:0.8rem; }
+  .notif-bell { font-size:1.18rem; padding:8px 12px; }
 }
 </style>
 </head>
@@ -430,7 +448,7 @@ html,body{min-height:100%; font-family:'DM Sans',sans-serif; background:var(--da
         </div>
         <div class="field-group">
           <label>Phone Number *</label>
-          <input type="tel" id="resPhone" placeholder="09XX XXX XXXX">
+          <input type="tel" id="resPhone" placeholder="09XX XXX XXXX" inputmode="numeric" pattern="^(\\+63|63|0)9\\d{9}$" title="Enter a valid Philippine mobile number">
         </div>
       </div>
       <div class="field-row single">
@@ -580,6 +598,11 @@ function showToast(msg, type='') {
   t.textContent = msg;
   t.className = 'toast show ' + type;
   setTimeout(() => t.className = 'toast', 4000);
+}
+
+function isValidPHPhone(phone) {
+  const normalized = phone.replace(/[\s()-]/g, '');
+  return /^(\+63|63|0)9\d{9}$/.test(normalized);
 }
 
 // Set min date to tomorrow
@@ -851,6 +874,12 @@ window.submitReservation = async function() {
   if (!name || !phone || !email || !date || !time) {
     errorBox.className = 'error-box show';
     errorBox.textContent = 'Please fill in all required fields.';
+    return;
+  }
+
+  if (!isValidPHPhone(phone)) {
+    errorBox.className = 'error-box show';
+    errorBox.textContent = 'Please enter a valid Philippine mobile number.';
     return;
   }
 

@@ -37,11 +37,11 @@
 .auth-form-panel.active{display:block;}
 
 /* ── HEADER USER BAR ── */
-.user-bar{display:flex;align-items:center;gap:8px;}
-.user-bar .user-name{color:#c8a96e;font-size:0.82rem;}
-.user-bar .logout-btn{background:transparent;border:1px solid #c8a96e;color:#c8a96e;border-radius:6px;padding:5px 12px;cursor:pointer;font-size:0.8rem;transition:all 0.2s;}
-.user-bar .logout-btn:hover{background:#c8a96e;color:#000;}
-.login-nav-btn{background:#c8a96e;color:#000!important;border-radius:6px;padding:6px 16px!important;font-weight:700;}
+.user-bar{display:flex;align-items:center;gap:12px;padding:8px 10px 8px 16px;border:1px solid rgba(200,169,110,0.28);border-radius:999px;background:linear-gradient(135deg, rgba(200,169,110,0.14), rgba(18,18,18,0.96));box-shadow:0 10px 24px rgba(0,0,0,0.28);}
+.user-bar .user-name{color:#f3dfb5;font-size:0.98rem;font-weight:700;letter-spacing:0.02em;}
+.user-bar .logout-btn{background:rgba(200,169,110,0.14);border:1px solid rgba(200,169,110,0.42);color:#f4e6c7;border-radius:999px;padding:8px 16px;cursor:pointer;font-size:0.9rem;font-weight:700;transition:all 0.2s;}
+.user-bar .logout-btn:hover{background:#c8a96e;color:#000;transform:translateY(-1px);}
+.login-nav-btn{background:#c8a96e;color:#000!important;border-radius:999px;padding:9px 20px!important;font-weight:700;}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:28px;right:28px;background:#1a1a1a;border:1px solid #c8a96e;color:#fff;padding:13px 22px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.88rem;z-index:99999;transform:translateY(80px);opacity:0;transition:all 0.3s;max-width:320px;}
@@ -59,14 +59,14 @@
 
 /* ── NOTIFICATION BELL ── */
 .notif-bell-wrap{position:relative;display:none;align-items:center;}
-.notif-bell-btn{background:transparent;border:1px solid rgba(200,169,110,0.3);color:#c8a96e;font-size:0.88rem;padding:5px 10px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s;}
-.notif-bell-btn:hover{background:rgba(200,169,110,0.1);}
-.nbb-count{background:#f44336;color:#fff;font-size:0.62rem;font-weight:700;padding:1px 5px;border-radius:8px;min-width:14px;text-align:center;display:none;}
+.notif-bell-btn{background:linear-gradient(135deg, rgba(200,169,110,0.2), rgba(20,20,20,0.96));border:1px solid rgba(200,169,110,0.34);color:#f1d49a;font-size:1.08rem;padding:9px 14px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;box-shadow:0 10px 24px rgba(0,0,0,0.24);}
+.notif-bell-btn:hover{background:linear-gradient(135deg, rgba(224,188,126,0.32), rgba(28,28,28,0.98));transform:translateY(-1px);}
+.nbb-count{background:#f44336;color:#fff;font-size:0.74rem;font-weight:700;padding:2px 7px;border-radius:999px;min-width:20px;text-align:center;display:none;}
 .nbb-count.has{display:inline-block;}
 .notif-dd{display:none;position:absolute;top:calc(100% + 10px);right:0;width:300px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;overflow:hidden;z-index:10001;box-shadow:0 16px 48px rgba(0,0,0,0.65);}
 .notif-dd.open{display:block;}
 .ndd-header{padding:13px 16px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;}
-.ndd-header span{font-weight:700;font-size:0.88rem;}
+.ndd-header span{font-weight:700;font-size:0.96rem;}
 .ndd-mark{background:none;border:none;color:#c8a96e;font-size:0.75rem;cursor:pointer;}
 .ndd-list{max-height:240px;overflow-y:auto;}
 .ndd-item{padding:11px 16px;border-bottom:1px solid #1e1e1e;cursor:pointer;display:flex;gap:10px;transition:background 0.12s;}
@@ -74,10 +74,16 @@
 .ndd-item.unread{background:rgba(200,169,110,0.04);}
 .ndd-item .ni{font-size:1rem;flex-shrink:0;margin-top:2px;}
 .ndd-body{flex:1;}
-.ndd-title{font-size:0.81rem;font-weight:600;margin-bottom:2px;}
-.ndd-time{font-size:0.72rem;color:#666;}
+.ndd-title{font-size:0.88rem;font-weight:600;margin-bottom:2px;}
+.ndd-time{font-size:0.78rem;color:#666;}
 .ndd-dot{width:7px;height:7px;background:#c8a96e;border-radius:50%;flex-shrink:0;margin-top:5px;}
 .ndd-empty{padding:28px;text-align:center;color:#555;font-size:0.84rem;}
+@media (max-width: 768px){
+.user-bar{gap:10px;padding:7px 8px 7px 12px;}
+.user-bar .user-name{font-size:0.9rem;}
+.user-bar .logout-btn{padding:7px 12px;font-size:0.82rem;}
+.notif-bell-btn{font-size:1rem;padding:8px 12px;}
+}
 </style>
 
 <link rel="preload" as="image" href="./assets/images/hero-slider-1.jpg">
@@ -354,7 +360,7 @@
             <div id="resFormFields">
               <div class="input-wrapper">
                 <input type="text" name="name" id="resName" placeholder="Your Name" autocomplete="off" class="input-field" required>
-                <input type="tel" name="phone" id="resPhone" placeholder="Phone Number" autocomplete="off" class="input-field" required>
+                <input type="tel" name="phone" id="resPhone" placeholder="09XX XXX XXXX" autocomplete="off" class="input-field" inputmode="numeric" pattern="^(\\+63|63|0)9\\d{9}$" title="Enter a valid Philippine mobile number" required>
                 <input type="email" name="email" id="resEmail" placeholder="Your Email" autocomplete="off" class="input-field" required>
               </div>
               <div class="input-wrapper">
@@ -611,6 +617,11 @@ function showToast(msg, type='') {
   t.textContent = msg;
   t.className = 'toast show ' + type;
   setTimeout(() => t.className = 'toast', 4000);
+}
+
+function isValidPHPhone(phone) {
+  const normalized = phone.replace(/[\s()-]/g, '');
+  return /^(\+63|63|0)9\d{9}$/.test(normalized);
 }
 
 // ── NOTIFICATIONS ──
@@ -875,6 +886,7 @@ window.submitReservation = async (e) => {
   const persons=document.getElementById('resPerson').value;
   const message=document.getElementById('resMessage').value.trim();
   if (!name||!phone||!email||!date){showToast('Please fill in all required fields.','error');return;}
+  if (!isValidPHPhone(phone)){showToast('Please enter a valid Philippine mobile number.','error');return;}
   if (bookedDates.has(date)){showToast('This date is fully booked. Please choose another.','error');return;}
   try {
     const conflictSnap = await getDocs(query(
